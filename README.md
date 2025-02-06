@@ -1,16 +1,15 @@
-```
-usage: planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME] [-save SAVE] [-tex] 
-                          [-tit TIT] [-Pmax PMAX] [-amax AMAX] [-t0 T0] [-P P] 
-                          [-Mstar MSTAR] [-Mplan MPLAN] [-rp RP] [-Rstar RSTAR]
-                          [-Rplan RPLAN] [-REB REB] [-a A] [-rhostar RHOSTAR] 
-                          [-rhoplan RHOPLAN] [-b B] [-i I] [-u1 U1] [-u2 U2] 
-                          [-e E] [-w W] [-norm NORM] [-x0 X0] [-x1 X1] [-y0 Y0] [-y1 Y1]
-                          [-zoom ZOOM] [-alpha ALPHA] [-F0 F0] [-bg BG] [-K K] [-off OFFSET]
+usage: planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME]
+                          [-save SAVE] [-tex] [-tit TIT] [-Pmax PMAX]
+                          [-amax AMAX] [-t0 T0] [-P P] [-Mstar MSTAR]
+                          [-Mplan MPLAN] [-rp RP] [-Rstar RSTAR]
+                          [-Rplan RPLAN] [-REB REB] [-a A] [-rhostar RHOSTAR]
+                          [-rhoplan RHOPLAN] [-b B] [-i I] [-u1 U1] [-u2 U2]
+                          [-e E] [-w W] [-norm NORM] [-x0 X0] [-x1 X1]
+                          [-y0 Y0] [-y1 Y1] [-zoom ZOOM] [-alpha ALPHA]
+                          [-F0 F0] [-bg BG] [-K K] [-off OFFSET]
                           [files ...]
 
-Vers. 2025-02-05 Arno Riffeser (arri@usm.lmu.de) 
-
-python planet_fast_fit.py
+Vers. 2025-02-06 (c) Arno Riffeser (arri@usm.lmu.de)
 
 positional arguments:
   files             files
@@ -28,7 +27,7 @@ options:
   -P P              [2.] Periode P
   -Mstar MSTAR      [0] Masse Stern / Mstar
   -Mplan MPLAN      [0] Masse Planet / Mplan
-  -rp RP            [0.1] Radiusverhaeltnis rp
+  -rp RP            [0] Radiusverhaeltnis rp
   -Rstar RSTAR      [0] Radius Stern Rstar
   -Rplan RPLAN      [0] Radius Planet Rplan
   -REB REB          [0] Radius EB 2nd star
@@ -50,6 +49,5 @@ options:
   -alpha ALPHA      [0.05] alpha
   -F0 F0            [1.0] F0
   -bg BG            [0.0] bg
-  -K K              [100.0] K
+  -K K              [0.0] K
   -off OFFSET       [0.0] offset
-```

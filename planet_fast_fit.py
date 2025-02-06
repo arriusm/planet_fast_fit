@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-02-05 Arno Riffeser (arri@usm.lmu.de)\npython planet_fast_fit.py'
+version='Vers. 2025-02-06 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -978,14 +978,14 @@ def slider_update_Mplan(val) :
     if params2.Mplan != val :
         params2.Mplan = val
         params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
-        params2.rhostar = calc_rhostar__Mstar_Rstar(params2)
+        #params2.rhostar = calc_rhostar__Mstar_Rstar(params2)
         #if (params2.rhostar>10.) :
         #    params2.rhostar = 10.
         params.a = calc_aR__rhostar_per(params,params2)
         params2.aAU =  params.a * (params2.Rstar*Rsun) / AU
         params2.K = calc_K__Mplan(params,params2)
         slider_rhoplan.set_val(params2.rhoplan)
-        slider_rhostar.set_val(params2.rhostar)
+        #slider_rhostar.set_val(params2.rhostar)
         slider_aR.set_val(params.a)
         slider_aAU.set_val(params2.aAU)
         slider_rv_K.set_val(params2.K)
@@ -1003,13 +1003,17 @@ def slider_update_inc(val) :
     if params.inc != val :
         params.inc = val
         params2.b = calc_b__aR_inc_ecc_w(params)
-        params2.K = calc_K__Mplan(params,params2)
+        # params2.K = calc_K__Mplan(params,params2)
+        params2.Mplan = calc_Mplan__K(params,params2)
+        params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
         params2.depth = calc_depth(params,params2)
         params2.dur   = calc_dur(params,params2)
+        slider_b.set_val(params2.b)
+        # slider_rv_K.set_val(params2.K)
+        slider_Mplan.set_val(params2.Mplan)
+        slider_rhoplan.set_val(params2.rhoplan)
         slider_dur.set_val(params2.dur)
         slider_depth.set_val(params2.depth)
-        slider_b.set_val(params2.b)
-        slider_rv_K.set_val(params2.K)
         # update_sliders(params,params2)
         update_plot1(params,params2)
         update_plot2(params,params2)
@@ -1034,7 +1038,7 @@ def slider_update_ecc(val) :
         if ( params.ecc > 1 - 1/(params.a/(1+params.rp)) ) :
             params.ecc = 1 - 1/(params.a/(1+params.rp))
             slider_ecc.set_val(params.ecc)
-        #params2.b = calc_b__aR_inc_ecc_w(params)
+        # params2.b = calc_b__aR_inc_ecc_w(params)
         params.inc = calc_inc__b_aR_ecc_w(params,params2)
         params2.depth = calc_depth(params,params2)
         params2.dur   = calc_dur(params,params2)
@@ -1056,7 +1060,7 @@ def slider_update_w(val) :
     global params,params2
     if params.w != val :
         params.w = val
-        #params2.b = calc_b__aR_inc_ecc_w(params)
+        # params2.b = calc_b__aR_inc_ecc_w(params)
         params.inc = calc_inc__b_aR_ecc_w(params,params2)
         params2.depth = calc_depth(params,params2)
         params2.dur   = calc_dur(params,params2)
@@ -1077,12 +1081,17 @@ def slider_update_b(val) :
     if params2.b != val :
         params2.b = val
         params.inc = calc_inc__b_aR_ecc_w(params,params2)
-        params2.K = calc_K__Mplan(params,params2)
+        # params2.K = calc_K__Mplan(params,params2)
+        params2.Mplan = calc_Mplan__K(params,params2)
+        params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
         params2.depth = calc_depth(params,params2)
         params2.dur   = calc_dur(params,params2)
+        slider_inc.set_val(params.inc)
+        # slider_rv_K.set_val(params2.K)
+        slider_Mplan.set_val(params2.Mplan)
+        slider_rhoplan.set_val(params2.rhoplan)
         slider_dur.set_val(params2.dur)
         slider_depth.set_val(params2.depth)
-        slider_inc.set_val(params.inc)
         # update_sliders(params,params2)
         update_plot1(params,params2)
         update_plot2(params,params2)
@@ -1294,7 +1303,7 @@ parser.add_argument('-t0',      dest='t0',          type=float, default='999',  
 parser.add_argument('-P',       dest='P',           type=float, default='2.',   help='[%(default)s] Periode P')
 parser.add_argument('-Mstar',   dest='Mstar',       type=float, default='0',    help='[%(default)s] Masse Stern  / Mstar')
 parser.add_argument('-Mplan',   dest='Mplan',       type=float, default='0',    help='[%(default)s] Masse Planet / Mplan')
-parser.add_argument('-rp',      dest='rp',          type=float, default='0.1',  help='[%(default)s] Radiusverhaeltnis rp')
+parser.add_argument('-rp',      dest='rp',          type=float, default='0',    help='[%(default)s] Radiusverhaeltnis rp')
 parser.add_argument('-Rstar',   dest='Rstar',       type=float, default='0',    help='[%(default)s] Radius Stern Rstar')
 parser.add_argument('-Rplan',   dest='Rplan',       type=float, default='0',    help='[%(default)s] Radius Planet Rplan')
 parser.add_argument('-REB',     dest='REB',         type=float, default='0',    help='[%(default)s] Radius EB 2nd star')
@@ -1316,7 +1325,7 @@ parser.add_argument('-zoom',    dest='zoom',        type=float, default=1.,     
 parser.add_argument('-alpha',   dest='alpha',       type=float, default=0.05,   help='[%(default)s] alpha')
 parser.add_argument('-F0',      dest='F0',          type=float, default=1.,     help='[%(default)s] F0')
 parser.add_argument('-bg',      dest='bg',          type=float, default=0.,     help='[%(default)s] bg')
-parser.add_argument('-K',       dest='K',           type=float, default=100.,   help='[%(default)s] K')
+parser.add_argument('-K',       dest='K',           type=float, default=0.,     help='[%(default)s] K')
 parser.add_argument('-off',     dest='offset',      type=float, default=0.,     help='[%(default)s] offset')
 args = parser.parse_args()
 
@@ -1336,20 +1345,23 @@ if args.lc_filename!='' :
 
 rv_filename = args.rv_filename
 
-if lc_filename=='' and rv_filename=='' :
-    print("no data specified")
-    exit(-1)
+# if lc_filename=='' and rv_filename=='' :
+#     print("no data specified")
+#     exit(-1)
 
+
+[tmin,tmax] = [-10,10]
 
 ##########################  LC data
-
-print('loading LC data:\n',lc_filename)
+    
+print('loading LC data:')
 
 norm = 1.
 myalpha    = args.alpha
 myalpha_rv = args.alpha*3
 
 if lc_filename!='' :
+    print("  ",lc_filename)
     #if lc_filename.endswith('.fits') and not lc_filename.endswith('tp.fits') and not lc_filename.endswith('dvt.fits') :
     if lc_filename.endswith('.fits') :
         tdata, Fdata, edata  = get_TESS_data(lc_filename)
@@ -1381,7 +1393,8 @@ if lc_filename!='' :
 
     [tmin,tmax] = [np.min(tdata),np.max(tdata)]
     [ymin,ymax] = [np.min(Fdata),np.max(Fdata)]
-
+else :
+    print("  no LC data specified")
 
 
 # if args.REB != 0. :
@@ -1393,14 +1406,18 @@ if lc_filename!='' :
 
 ###################### RV data
 
+print('loading RV data:')
+
 if rv_filename!='' :
-    print('loading RV data:\n',rv_filename)
+    print("  ",rv_filename)
     x_rv, y_rv, err_rv  = np.genfromtxt(rv_filename, comments='#',dtype="f8,f8,f8", unpack=True)
     x_rv -= 2450000.
     if lc_filename=='' :
         t0start = (np.min(x_rv)+np.max(x_rv))/2.
         [tmin,tmax]  = [t0start-2.5*args.P,t0start+2.5*args.P]
         [ymin,ymax] = [0.9,1.1]
+else :
+    print("  no RV data specified")
 
 if args.t0==999 :
     t0start = (tmin+tmax)/2.
@@ -1436,13 +1453,6 @@ else :
 # tend   = 2457140. -  2400000.
 
 #rc_filename = '51Peg_RV_WST_2-1m.tab'     # 51 Peg Wendelstein
-
-if lc_filename!='' :
-    [tmin_rv,tmax_rv] = [tmin,tmax]
-    [ymin_rv,ymax_rv] = [args.offset-2*args.K,args.offset+2*args.K]
-if rv_filename!='' :
-    [tmin_rv,tmax_rv]  = [np.min(x_rv),np.max(x_rv)]
-    [ymin_rv,ymax_rv]  = [np.min(y_rv),np.max(y_rv)]
 
 
 #print("tmin_rv,tmax_rv = ",tmin_rv,tmax_rv)
@@ -1597,6 +1607,8 @@ if args.i != 0. :
     params2.b = calc_b__aR_inc_ecc_w(params)
 params.inc = calc_inc__b_aR_ecc_w(params,params2) # orbital inclination (in degrees)
 
+
+
 if args.rp == 0. :
     if args.rhoplan == 0. :
         if args.K>0 :
@@ -1611,9 +1623,8 @@ if args.rp == 0. :
                 print("args.K       = ",args.K)
                 print("args.Mplan   = ",args.Mplan)
                 print("args.Rplan   = ",args.Rplan)
-                print("args.a       = ",args.a)
                 print("args.rhoplan = ",args.rhoplan)
-                print("args.P       = ",args.P)
+                print("args.rp      = ",args.rp)
                 exit(-1)
         else :
             if args.Mplan != 0. and args.Rplan != 0. :
@@ -1622,25 +1633,31 @@ if args.rp == 0. :
                 params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
                 params.rp = calc_rp__Rplan_Rstar(params,params2)
                 params2.K   = calc_K__Mplan(params,params2)
+            elif args.Mplan==0. and args.Rplan==0. and params.rp==0 and params2.Rstar!=0. :
+                # here if no parameters are given
+                params2.Mplan   = 100
+                params2.Rplan   = 10
+                params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
+                params.rp = calc_rp__Rplan_Rstar(params,params2)
+                params2.K   = calc_K__Mplan(params,params2)
             else :
                 print("inconsistent given parameters:")
                 print("args.K       = ",args.K)
                 print("args.Mplan   = ",args.Mplan)
                 print("args.Rplan   = ",args.Rplan)
-                print("args.a       = ",args.a)
                 print("args.rhoplan = ",args.rhoplan)
-                print("args.P       = ",args.P)
+                print("args.rp      = ",args.rp)
                 exit(-1)
     else :
         params2.rhoplan = args.rhoplan
         if args.K==0 :
-            if args.Mplan == 0. and args.Rplan != 0. :
+            if   args.Mplan == 0. and args.Rplan != 0. :
                 params2.Rplan   = args.Rplan
                 params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
             elif args.Mplan != 0. and args.Rplan == 0. :
                 params2.Mplan   = args.Mplan
                 params2.Rplan   = calc_Rplan__rhoplan_Mplan(params2)
-            elif  args.Mplan == 0. and args.Rplan == 0. :
+            elif args.Mplan == 0. and args.Rplan == 0. :
                 params2.Rplan   = 1.
                 params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
             else :
@@ -1649,11 +1666,19 @@ if args.rp == 0. :
                 print("args.Mplan   = ",args.Mplan)
                 print("args.Rplan   = ",args.Rplan)
                 exit(-1)
+            params.rp = calc_rp__Rplan_Rstar(params,params2)
         else :
-            params2.K      = args.K
+            params2.K  = args.K
             if  args.Mplan == 0. and args.Rplan == 0. :
                 params2.Mplan   = calc_Mplan__K(params,params2)
                 params2.Rplan   = calc_Rplan__rhoplan_Mplan(params2)
+            if  args.Mplan == 0. and args.Rplan != 0. :
+                Mplan90  = calc_Mplan__K(params,params2)
+                Mplaninc = calc_Mplan__rhoplan_Rplan(params2)
+                print("possible to determine inc (not yet implemented)")
+                print("Mplan90  = ",Mplan90)
+                print("Mplaninc = ",Mplaninc)
+                exit(-1)                
             else :
                 print("too many given parameters:")
                 print("args.rhoplan = ",args.rhoplan)
@@ -1670,25 +1695,44 @@ else :
                 params2.Mplan   = calc_Mplan__K(params,params2)
                 params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
                 params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
+            #elif args.Mplan != 0. and args.Rplan != 0. :
+            #    params2.Mplan   = args.Mplan
+            #    params2.Rplan   = args.Rplan
+            #    params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
+            #elif args.Mplan == 0. and args.Rplan != 0. :
+            #    params2.Mplan   = calc_Mplan__K(params,params2)
+            #    params2.Rplan   = args.Rplan
+            #    params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
             else :
                 print("too many given parameters:")
-                print("args.rp      = ",args.rp)
-                print("args.Rplan   = ",args.Rplan)
-                print("args.K       = ",args.K)
-                print("args.Mplan   = ",args.Mplan)
-                print("args.Mstar   = ",args.Mstar)
-                print("args.rhoplan = ",args.rhoplan)
+                print("  args.rp      = ",args.rp)
+                print("  args.Rplan   = ",args.Rplan)
+                print("  args.Rstar   = ",args.Rstar)
+                print("  args.K       = ",args.K)
+                print("  args.i       = ",args.i)
+                print("  args.Mplan   = ",args.Mplan)
+                print("  args.Mstar   = ",args.Mstar)
+                print("  args.rhoplan = ",args.rhoplan)
                 exit(-1)
         else :
-            if   args.rhoplan == 0. and args.Mplan != 0. :
+            if   args.rhoplan == 0. and args.Mplan != 0. and args.Rplan != 0. :
                 params2.Mplan   = args.Mplan
+                params2.Rplan   = args.Rplan
                 params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
-            elif args.rhoplan != 0. and args.Mplan == 0. :
+                params2.K   = calc_K__Mplan(params,params2)
+            elif args.rhoplan == 0. and args.Mplan != 0. and args.Rplan == 0. :
+                params2.Mplan   = args.Mplan
+                params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
+                params2.K   = calc_K__Mplan(params,params2)
+            elif args.rhoplan != 0. and args.Mplan == 0. and args.Rplan != 0. :
                 params2.rhoplan = args.rhoplan
+                params2.Rplan   = args.Rplan
                 params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
-            elif args.rhoplan == 0. and args.Mplan == 0. :
+                params2.K       = calc_K__Mplan(params,params2)
+            elif args.rhoplan != 0. and args.Mplan != 0. :
                 params2.rhoplan = args.rhoplan
                 params2.Mplan   = args.Mplan
+                params2.K   = calc_K__Mplan(params,params2)
             else :
                 print("inconsistent given parameters:")
                 print("args.a       = ",args.a)
@@ -1711,6 +1755,16 @@ params2.offset = args.offset
 #params2.Ms     = 1.
 #params2.MP     = calc_Mplan__K(params,params2)
 
+if rv_filename!='' :
+    [tmin_rv,tmax_rv]  = [np.min(x_rv),np.max(x_rv)]
+    [ymin_rv,ymax_rv]  = [np.min(y_rv),np.max(y_rv)]
+elif lc_filename!='' :
+    [tmin_rv,tmax_rv] = [tmin,tmax]
+    [ymin_rv,ymax_rv] = [args.offset-2*args.K,args.offset+2*args.K]
+else :
+    [tmin_rv,tmax_rv] = [tmin,tmax]
+    [ymin_rv,ymax_rv] = [-params2.K*1.5,params2.K*1.5]
+
 
 ############ plotting areas and slider ranges
 
@@ -1728,6 +1782,9 @@ else :
     elif rv_filename!='' :
         # [xstart,xend] = calc_xlim(x_rv)
         [xstart,xend] = [tmin,tmax]
+    else :
+        # [xstart,xend] = calc_xlim(x_rv)
+        [xstart,xend] = [tmin,tmax]
 
 if args.y0!=0. and args.y1!=0. :
     [ystart,yend] = [args.y0,args.y1]
@@ -1739,7 +1796,7 @@ else :
         [ystart,yend] = [0.9,1.1]
 
 [xstart_rv,xend_rv] = [xstart,xend]
-[ystart_rv,yend_rv] = [ymin_rv,ymax_rv]
+[ystart_rv,yend_rv] = [-params2.K*1.5,params2.K*1.5]
 if rv_filename!='' :
     [xstart_rv,xend_rv] = calc_rv_xlim(x_rv)
     [ystart_rv,yend_rv] = calc_rv_ylim(y_rv)
@@ -2065,7 +2122,7 @@ slider_Rplan     = Slider(ax_Rplan,     title_Rplan,   valmin=1,              va
 slider_Mplan     = Slider(ax_Mplan,     title_Mplan,   valmin=0,              valmax=1000.,          valfmt="%1.3f", valinit=params2.Mplan,   color='b')
 slider_rp        = Slider(ax_rp,        title_rp,      valmin=0.01,           valmax=1.,             valfmt="%1.3f", valinit=params.rp,       color='g')
 slider_b         = Slider(ax_b,         title_b,       valmin=0.,             valmax=2.,             valfmt="%1.3f", valinit=params2.b,       color='b')
-slider_inc       = Slider(ax_inc,       title_inc,     valmin=70.,            valmax=90.,            valfmt="%1.3f", valinit=params.inc,      color='g')
+slider_inc       = Slider(ax_inc,       title_inc,     valmin=params.inc-30,  valmax=90.,            valfmt="%1.3f", valinit=params.inc,      color='g')
 slider_u1        = Slider(ax_u1 ,       title_u1,      valmin=0.,             valmax=2.,             valfmt="%1.3f", valinit=params.u[0],     color='g')
 slider_u2        = Slider(ax_u2 ,       title_u2,      valmin=-1.,            valmax=1.,             valfmt="%1.3f", valinit=params.u[1],     color='g')
 slider_ecc       = Slider(ax_ecc,       title_ecc,     valmin=0.,             valmax=1.,             valfmt="%1.3f", valinit=params.ecc,      color='g')
