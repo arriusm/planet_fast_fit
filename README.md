@@ -1,3 +1,4 @@
+```
 usage: planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME]
                           [-save SAVE] [-tex] [-tit TIT] [-Pmax PMAX]
                           [-amax AMAX] [-t0 T0] [-P P] [-Mstar MSTAR]
@@ -51,3 +52,4 @@ options:
   -bg BG            [0.0] bg
   -K K              [0.0] K
   -off OFFSET       [0.0] offset
+```
