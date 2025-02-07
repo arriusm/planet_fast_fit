@@ -17,7 +17,11 @@
 # python  ../../planet_fast_fit.py  -rhostar 0.484978 -P 3.9501907 -t0 -583.3288 -i 88.7 -rp 0.1094  -u1 0.5 -zoom 10  -alpha 0.05 -tit "A&A 572, A49 (2014)"  TOI0107_TIC0092352620_SEC27.fits
 
 # my bestfit:
-python  ../../planet_fast_fit.py  -rhostar 0.49  -P 3.9502  -t0 9047.236  -b 0.0  -rp 0.104  -u1 0.5  -zoom 3  -alpha 0.05  -tit "TOI 107:"  -save TOI0107_planet_fast_fit.pdf  TOI0107_TIC092352620_SEC27.fits
+# python  ../../planet_fast_fit.py  -rhostar 0.49  -P 3.9502  -t0 9047.236  -b 0.0  -rp 0.104  -u1 0.5  -zoom 3  -alpha 0.05  -tit "TOI 107:"  -save TOI0107_planet_fast_fit.pdf  TOI0107_TIC092352620_SEC27.fits
+
+
+# TIC-Katalog
+python  ../../planet_fast_fit.py  -rhostar 0.32  -P 3.9502  -t0 9047.236  -b 0.5  -rp 0.109  -u1 0.5  -zoom 3  -alpha 0.05  -tit "TOI 107:"  -save TOI0107_planet_fast_fit.pdf  TOI0107_TIC092352620_SEC27.fits
 
 # TIC:
 # python  ../../planet_fast_fit.py  -rhostar 0.32  -P 3.9502  -t0 9047.236  -b 0.5  -rp 0.109  -u1 0.5  -zoom 3  -alpha 0.05   -tit "TOI 107:"  -save TOI0107_planet_fast_fit.pdf   TOI0107_TIC0092352620_SEC27.fits
