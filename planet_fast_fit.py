@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-02-06 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 2025-02-07 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -1287,7 +1287,7 @@ marker_style = dict(linestyle='',  marker='o', fillstyle='full', markeredgewidth
 line_style   = dict(linestyle='-', marker='')
 onlyplot = False
 #prec = 3001
-prec = 501
+#prec = 501
 
 parser = argparse.ArgumentParser(description=version)
 parser.add_argument('files',    nargs='*',          help='files')
@@ -1327,7 +1327,13 @@ parser.add_argument('-F0',      dest='F0',          type=float, default=1.,     
 parser.add_argument('-bg',      dest='bg',          type=float, default=0.,     help='[%(default)s] bg')
 parser.add_argument('-K',       dest='K',           type=float, default=0.,     help='[%(default)s] K')
 parser.add_argument('-off',     dest='offset',      type=float, default=0.,     help='[%(default)s] offset')
+parser.add_argument('-prec',    dest='prec',        type=float, default=501,    help='[%(default)s] precisione')
 args = parser.parse_args()
+
+prec = int(args.prec)
+if prec<101 :
+  print('precision too low (need >=101)')
+  exit(1)
 
 
 # reading data
@@ -1715,7 +1721,7 @@ else :
                 print("  args.rhoplan = ",args.rhoplan)
                 exit(-1)
         else :
-            if   args.rhoplan == 0. and args.Mplan != 0. and args.Rplan != 0. :
+            if  args.rhoplan == 0. and args.Mplan != 0. and args.Rplan != 0. :
                 params2.Mplan   = args.Mplan
                 params2.Rplan   = args.Rplan
                 params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
@@ -1733,9 +1739,16 @@ else :
                 params2.rhoplan = args.rhoplan
                 params2.Mplan   = args.Mplan
                 params2.K   = calc_K__Mplan(params,params2)
+            elif args.rhoplan == 0.  and args.Mplan == 0. and args.Rplan == 0. :              
+                params2.Mplan   = 100
+                params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
+                params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
+                params2.K   = calc_K__Mplan(params,params2)
             else :
-                print("inconsistent given parameters:")
-                print("args.a       = ",args.a)
+                print(">>>>inconsistent given parameters:")
+                print("args.rp      = ",args.rp)
+                print("args.Mplan   = ",args.Mplan)
+                print("args.Rplan   = ",args.Rplan)
                 print("args.rhoplan = ",args.rhoplan)
                 print("args.P       = ",args.P)
                 exit(-1)
@@ -1760,7 +1773,7 @@ if rv_filename!='' :
     [ymin_rv,ymax_rv]  = [np.min(y_rv),np.max(y_rv)]
 elif lc_filename!='' :
     [tmin_rv,tmax_rv] = [tmin,tmax]
-    [ymin_rv,ymax_rv] = [args.offset-2*args.K,args.offset+2*args.K]
+    [ymin_rv,ymax_rv] = [params2.offset-2*params2.K,params2.offset+2*params2.K]
 else :
     [tmin_rv,tmax_rv] = [tmin,tmax]
     [ymin_rv,ymax_rv] = [-params2.K*1.5,params2.K*1.5]
