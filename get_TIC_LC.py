@@ -1,17 +1,15 @@
 #!/Users/arri/miniconda3/bin/python
 
+import argparse
+import os
+import time
 
-#  import lightkurve as lk
-#  lk.search_lightcurve("TIC 40292751",author = 'TESS-SPOC')[0].download(flux_column="pdcsap_flux")
-
-# pip3 install astroquery
+# pip install astroquery
 from astroquery.mast import Observations
 
-import argparse
-
-parser = argparse.ArgumentParser(description='2023-08-31 Arno Riffeser (USM@LMU)\npython ./get_TIC_LC.py')
-parser.add_argument('numbers',    nargs='*',      help='TIC number')
-parser.add_argument('-prov',  dest='prov',     type=str,   default='SPOC',     help='[%(default)s] provenience name: TESS-SPOC or SPOC or or QLP')
+parser = argparse.ArgumentParser(description='2025-05-09 Arno Riffeser (USM@LMU)\npython ./get_TIC_LC.py')
+parser.add_argument('numbers', nargs='*', help='TIC number')
+parser.add_argument('-prov',  dest='prov', type=str,  default='SPOC', help='[%(default)s] provenience name: TESS-SPOC or SPOC or QLP')
 args = parser.parse_args()
 
 # https://archive.stsci.edu/hlsp/qlp/provenancesearch
@@ -27,15 +25,23 @@ args = parser.parse_args()
 #           If you want the broadest possible search for "anything related to TESS", set PROJECT = "TESS".
 # 
 # Provenance = "QLP" can be used to find any QLP light curves.
-#              This will exclude all official, mission-produced light curves, and any other HLSP that are not from the "QLP" HLSP.
-#              Each HLSP has the Provenance name set to their HLSP shortname, and of course you can include more than one in a given search.
+#              This will exclude all official, mission-produced light curves,
+#              and any other HLSP that are not from the "QLP" HLSP.
+#              Each HLSP has the Provenance name set to their HLSP shortname, and of
+#              course you can include more than one in a given search.
+#
+# see
+#  import lightkurve as lk
+#  lk.search_lightcurve("TIC 40292751",author = 'TESS-SPOC')[0].download(flux_column="pdcsap_flux")
 
 
 for n in args.numbers :
 
-  name = 'TIC '+n  # TOI 5786
+  name = 'TIC '+n 
+  prename = 'TIC'+n  
   provname=args.prov
-  
+
+  # e.g.
   # name = 'TIC 407905370' # TOI 3573
   # name = 'TIC 468692991' # TOI 6136
   # name = 'TIC 155258153' # TOI 6195
@@ -46,9 +52,6 @@ for n in args.numbers :
   print(provname)
 
   obs = Observations.query_criteria(objectname=name, project='TESS', dataproduct_type='timeseries', provenance_name=provname, radius='2.5e-08 deg')
-
-  
-  # print(obs['dataURL'])
   
   for i in obs['dataURL'] :
       print('https://mast.stsci.edu/api/v0.1/Download/file/?uri='+i)
@@ -59,5 +62,16 @@ for n in args.numbers :
   
     manifest = Observations.download_products(data_products, productType="SCIENCE")
 
+    timestamp = time.strftime('%y%m%d%H%M%S')
+    downdir =  'mastDownload_'+timestamp
+    os.rename('mastDownload',downdir)
 
+    walker = os.walk(downdir)
+    for dirpath, dirnames, filenames in walker:
+      if filenames:
+        for file in filenames:
+          if file[-7:]=='lc.fits' :
+            filepath = os.path.join(dirpath,file)
+            print('    ',prename+'_'+file)
+            os.rename(filepath,prename+'_'+file)
 
