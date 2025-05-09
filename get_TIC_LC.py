@@ -3,6 +3,7 @@
 import argparse
 import os
 import time
+import numpy as np
 
 # pip install astroquery
 from astroquery.mast import Observations
@@ -52,14 +53,24 @@ for n in args.numbers :
   print(provname)
 
   obs = Observations.query_criteria(objectname=name, project='TESS', dataproduct_type='timeseries', provenance_name=provname, radius='2.5e-08 deg')
+  mask = [ url[-7:]=='lc.fits' for url in obs['dataURL'] ]
+  obs = obs[mask]
   
   for i in obs['dataURL'] :
       print('https://mast.stsci.edu/api/v0.1/Download/file/?uri='+i)
-  
+
+  #for i in obs.colnames :
+  #  print(i,'  : ',list(obs[i]))
+    
   if len(obs)>0 :
   
     data_products = Observations.get_product_list(obs)
+    mask = [ url[-7:]=='lc.fits' for url in data_products['productFilename'] ]
+    data_products = data_products[mask]
   
+    #for i in data_products.colnames :
+    #  print(i,'  : ',list(data_products[i]))
+
     manifest = Observations.download_products(data_products, productType="SCIENCE")
 
     timestamp = time.strftime('%y%m%d%H%M%S')
@@ -70,8 +81,12 @@ for n in args.numbers :
     for dirpath, dirnames, filenames in walker:
       if filenames:
         for file in filenames:
-          if file[-7:]=='lc.fits' :
+          fileend=file[-7:]
+          if fileend=='lc.fits' :
+            filesec=file[21:23]
+            filetic=file[30:40]
             filepath = os.path.join(dirpath,file)
-            print('    ',prename+'_'+file)
-            os.rename(filepath,prename+'_'+file)
+            newname='TIC'+filetic+'_SEC'+filesec+'_'+provname+'.fits'
+            print('    ',newname)
+            os.rename(filepath,newname)
 
