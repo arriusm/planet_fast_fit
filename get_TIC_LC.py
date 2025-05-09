@@ -11,6 +11,7 @@ from astroquery.mast import Observations
 parser = argparse.ArgumentParser(description='2025-05-09 Arno Riffeser (USM@LMU)\npython ./get_TIC_LC.py')
 parser.add_argument('numbers', nargs='*', help='TIC number')
 parser.add_argument('-prov',  dest='prov', type=str,  default='SPOC', help='[%(default)s] provenience name: TESS-SPOC or SPOC or QLP')
+parser.add_argument('-name',  dest='name', type=str,  default='', help='[%(default)s] name')
 args = parser.parse_args()
 
 # https://archive.stsci.edu/hlsp/qlp/provenancesearch
@@ -61,6 +62,7 @@ for n in args.numbers :
 
   #for i in obs.colnames :
   #  print(i,'  : ',list(obs[i]))
+
     
   if len(obs)>0 :
   
@@ -86,7 +88,14 @@ for n in args.numbers :
             filesec=file[21:23]
             filetic=file[30:40]
             filepath = os.path.join(dirpath,file)
-            newname='TIC'+filetic+'_SEC'+filesec+'_'+provname+'.fits'
+            if provname=='SPOC' :
+              fileprov=''
+            else :
+              fileprov='_'+provname
+            if args.name=='' :
+              newname='TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
+            else :
+              newname=args.name+'_TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
             print('    ',newname)
             os.rename(filepath,newname)
 
