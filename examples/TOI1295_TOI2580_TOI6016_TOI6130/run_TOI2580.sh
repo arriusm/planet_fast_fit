@@ -35,4 +35,7 @@
 
 # python  ../../planet_fast_fit.py  -save TOI2580_planet_fast_fit.pdf  -tit "TOI 2580:"  -P 6.7955012  -t0 8839.4534  -rp 0.0867  -b 0.16  -e 0.08  -w 114  -rhostar 0.3162  -K 70.  -off 31.  -u1  0.10022   -u2 0.45655   -Ms 1.33   -zoom 3  -alpha 0.1  -rv TOI2580_RV_MaHPS.dat  TOI2580_TIC102713734_SEC59.fits
 
-python  ../../planet_fast_fit.py  -save TOI2580_planet_fast_fit.pdf  -tit "TOI 2580:"  -P 3.3977506  -t0 8839.4534  -rp 0.090  -b 0.16  -e 0.08  -w 114  -rhostar 0.3162  -K 70.  -off 31.  -u1  0.10022   -u2 0.45655   -Ms 1.33   -zoom 3  -alpha 0.1  -rv TOI2580_RV_MaHPS.dat  TOI2580_TIC102713734_SEC59.fits
+python  ../../planet_fast_fit.py  -save TOI2580_planet_fast_fit.pdf  -tit "TOI 2580:"  -P 3.3977506  -t0 8839.4534  -rp 0.090  -b 0.16  -e 0.08  -w 114  -rhostar 0.3162  -K 70.  -off 31.  -u1  0.10022   -u2 0.45655   -Ms 1.33   -zoom 3  -alpha 0.1  -rv TOI2580_RV_MaHPS.dat  TOI2580_TIC0102713734_SEC59.fits
+
+# cd TOI1295_LC
+# for i in *.fits; do python  ../../../planet_fast_fit.py  -save ${i}.pdf  -tit "TOI 2580:"  -P 3.3977506  -t0 8839.4534  -rp 0.090  -b 0.16  -e 0.08  -w 114  -rhostar 0.3162  -K 70.  -u1  0.10022   -u2 0.45655   -Ms 1.33   -zoom 3  -alpha 0.1  -y0 0.98 -y1 1.02 ${i}; done

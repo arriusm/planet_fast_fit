@@ -29,4 +29,7 @@
 
 # grep MaHPS toi1295.dat > TOI1295_RV_MaHPS.dat
 
-python ../../planet_fast_fit.py  -save TOI1295_planet_fast_fit.pdf  -tit "TOI 1295:" -P 3.1968840  -t0 9913.37999  -rp 0.0840  -b 0.555  -e 0.024  -w 80  -rhostar 0.400   -K 158.  -off 53.  -u1 0.15382  -u2 0.43779   -Ms 1.38   -zoom 3  -alpha 0.15  -rv TOI1295_RV_MaHPS.dat  TOI1295_TIC219852584_SEC59.fits
+# cd TOI1295_LC
+# for i in *.fits; do python ../../../planet_fast_fit.py  -save ${i}.pdf  -tit "TOI 1295:" -P 3.1968840  -t0 9913.37999  -rp 0.0840  -b 0.555  -e 0.024  -w 80  -rhostar 0.400   -K 158.  -off 0.  -u1 0.15382  -u2 0.43779   -Ms 1.38   -zoom 3  -alpha 0.15 -y0 0.985 -y1 1.005  ${i}; done
+
+python ../../planet_fast_fit.py  -save TOI1295_planet_fast_fit.pdf  -tit "TOI 1295:" -P 3.1968840  -t0 9913.37999  -rp 0.0840  -b 0.555  -e 0.024  -w 80  -rhostar 0.400   -K 158.  -off 53.  -u1 0.15382  -u2 0.43779   -Ms 1.38   -zoom 3  -alpha 0.15  -rv TOI1295_RV_MaHPS.dat  TOI1295_TIC0219852584_SEC59.fits
