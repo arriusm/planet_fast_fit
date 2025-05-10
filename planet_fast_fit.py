@@ -1308,7 +1308,7 @@ parser.add_argument('-Rstar',   dest='Rstar',       type=float, default='0',    
 parser.add_argument('-Rplan',   dest='Rplan',       type=float, default='0',    help='[%(default)s] Radius Planet Rplan')
 parser.add_argument('-REB',     dest='REB',         type=float, default='0',    help='[%(default)s] Radius EB 2nd star')
 parser.add_argument('-a',       dest='a',           type=float, default='0.',   help='[%(default)s] Grosse Halbachse a')
-parser.add_argument('-rhostar', dest='rhostar',     type=float, default='1.0',  help='[%(default)s] mittl. Sterndichte rhostar')
+parser.add_argument('-rhostar', dest='rhostar',     type=float, default='0.',   help='[%(default)s] mittl. Sterndichte rhostar')
 parser.add_argument('-rhoplan', dest='rhoplan',     type=float, default='0.0',  help='[%(default)s] mittl. Planetendichte rhoplan')
 parser.add_argument('-b',       dest='b',           type=float, default='0.',   help='[%(default)s] Impaktparameter b')
 parser.add_argument('-i',       dest='i',           type=float, default='0.',   help='[%(default)s] Inklination i')
@@ -1738,12 +1738,21 @@ else :
                 print("  args.Mstar   = ",args.Mstar)
                 print("  args.rhoplan = ",args.rhoplan)
                 exit(-1)
-        else :
-            if args.K == 0 :
+        elif args.K == 0 :
               if args.rhoplan != 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
                   params2.rhoplan = args.rhoplan
                   params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
                   params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
+                  params2.K       = calc_K__Mplan(params,params2)
+              elif args.rhoplan == 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
+                  params2.rhoplan = 1.
+                  params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
+                  params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
+                  params2.K       = calc_K__Mplan(params,params2)
+              elif args.Mplan != 0. and args.Rplan == 0. and args.Rstar != 0.:
+                  params2.Mplan   = args.Mplan
+                  params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
+                  params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
                   params2.K       = calc_K__Mplan(params,params2)
               elif args.rhoplan != 0. and args.Mplan != 0. :
                   params2.rhoplan = args.rhoplan
@@ -1757,6 +1766,9 @@ else :
                   print("args.rhoplan = ",args.rhoplan)
                   print("args.P       = ",args.P)
                   exit(-1)
+        else :
+            print(" negative  args.K       = ",args.K)
+            exit(-1)
 
     else :
         params2.rhoplan = args.rhoplan
