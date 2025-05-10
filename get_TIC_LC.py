@@ -10,7 +10,7 @@ from astroquery.mast import Observations
 
 parser = argparse.ArgumentParser(description='2025-05-09 Arno Riffeser (USM@LMU)\npython ./get_TIC_LC.py')
 parser.add_argument('numbers', nargs='*', help='TIC number')
-parser.add_argument('-prov',  dest='prov', type=str,  default='SPOC', help='[%(default)s] provenience name: TESS-SPOC or SPOC or QLP')
+parser.add_argument('-prov',  dest='prov', type=str,  default='', help='[%(default)s] provenience name: TESS-SPOC or SPOC or QLP')
 parser.add_argument('-name',  dest='name', type=str,  default='', help='[%(default)s] name')
 args = parser.parse_args()
 
@@ -36,66 +36,69 @@ args = parser.parse_args()
 #  import lightkurve as lk
 #  lk.search_lightcurve("TIC 40292751",author = 'TESS-SPOC')[0].download(flux_column="pdcsap_flux")
 
-
+if args.prov in ['spoc','qlp','tess-spoc']:  
+  provlist=args.prov
+elif args.prov=='' :
+  #provlist=['SPOC','QLP','TESS-SPOC']
+  provlist=['spoc','qlp','tess-spoc']
+else :
+  print('wrong prov :',args.prov)
+  
 for n in args.numbers :
 
   name = 'TIC '+n 
-  prename = 'TIC'+n  
-  provname=args.prov
-
-  # e.g.
-  # name = 'TIC 407905370' # TOI 3573
-  # name = 'TIC 468692991' # TOI 6136
-  # name = 'TIC 155258153' # TOI 6195
-  # name = 'TIC 15682927'  # TOI 5886
-  # provname='QLP'
-  
   print(name)
-  print(provname)
+  prename = 'TIC'+n
 
-  obs = Observations.query_criteria(objectname=name, project='TESS', dataproduct_type='timeseries', provenance_name=provname, radius='2.5e-08 deg')
-  mask = [ url[-7:]=='lc.fits' for url in obs['dataURL'] ]
-  obs = obs[mask]
+  for provname in provlist :
   
-  for i in obs['dataURL'] :
-      print('https://mast.stsci.edu/api/v0.1/Download/file/?uri='+i)
-
-  #for i in obs.colnames :
-  #  print(i,'  : ',list(obs[i]))
-
+    print(provname)
     
-  if len(obs)>0 :
-  
-    data_products = Observations.get_product_list(obs)
-    mask = [ url[-7:]=='lc.fits' for url in data_products['productFilename'] ]
-    data_products = data_products[mask]
-  
-    #for i in data_products.colnames :
-    #  print(i,'  : ',list(data_products[i]))
-
-    manifest = Observations.download_products(data_products, productType="SCIENCE")
-
-    timestamp = time.strftime('%y%m%d%H%M%S')
-    downdir =  'mastDownload_'+timestamp
-    os.rename('mastDownload',downdir)
-
-    walker = os.walk(downdir)
-    for dirpath, dirnames, filenames in walker:
-      if filenames:
-        for file in filenames:
-          fileend=file[-7:]
-          if fileend=='lc.fits' :
-            filesec=file[21:23]
-            filetic=file[30:40]
-            filepath = os.path.join(dirpath,file)
-            if provname=='SPOC' :
-              fileprov=''
-            else :
+    obs = Observations.query_criteria(objectname=name, project='TESS',
+                                      dataproduct_type='timeseries', provenance_name=provname,
+                                      radius='2.5e-08 deg')
+    mask = [ url[-7:]=='lc.fits' for url in obs['dataURL'] ]
+    obs = obs[mask]
+    
+    #for i in obs['dataURL'] :
+    #  print('https://mast.stsci.edu/api/v0.1/Download/file/?uri='+i)
+    
+    #for i in obs.colnames :
+    #  print(i,'  : ',list(obs[i]))
+     
+    if len(obs)>0 :
+    
+      data_products = Observations.get_product_list(obs)
+      mask = [ url[-7:]=='lc.fits' for url in data_products['productFilename'] ]
+      data_products = data_products[mask]
+    
+      #for i in data_products.colnames :
+      #  print(i,'  : ',list(data_products[i]))
+    
+      manifest = Observations.download_products(data_products, productType="SCIENCE")
+    
+      timestamp = time.strftime('%y%m%d%H%M%S')
+      downdir =  'mastDownload_'+timestamp
+      os.rename('mastDownload',downdir)
+    
+      walker = os.walk(downdir)
+      for dirpath, dirnames, filenames in walker:
+        if filenames:
+          for file in filenames:
+            fileend=file[-7:]
+            if fileend=='lc.fits' :
+              if provname=='tess-spoc' :
+                filesec=file[45:47]
+                filetic=file[31:41]
+              else :
+                filesec=file[21:23]
+                filetic=file[30:40]              
+              filepath = os.path.join(dirpath,file)
               fileprov='_'+provname
-            if args.name=='' :
-              newname='TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
-            else :
-              newname=args.name+'_TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
-            print('    ',newname)
-            os.rename(filepath,newname)
+              if args.name=='' :
+                newname='TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
+              else :
+                newname=args.name+'_TIC'+filetic+'_SEC'+filesec+fileprov+'.fits'
+              print('    ',newname)
+              os.rename(filepath,newname)
 

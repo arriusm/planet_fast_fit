@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-02-14 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 2025-05-10 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -1505,18 +1505,24 @@ def print_all(params,params2) :
         q2 = 0.25
     else :
         q2 = params.u[0]/(2.*(params.u[0]+params.u[1]))  # Kipping 2013 Eq. 18
+    print('  x0 [d]           =',  xstart    )
+    print('  x1 [d]           =',  xend      )
+    print('  y0               =',  ystart    )
+    print('  y1               =',  yend      )
+    print('  y0_rv [km/s]     =',  ystart_rv )
+    print('  y1_rv [km/s]     =',  yend_rv   )
     print('  t0 [d]           =',params.t0   )
     print('  period [d]       =',params.per  )
     print('  a/Rstar          =',params.a    )
-    print('  a [AU]           =',params2.aAU  )
+    print('  a [AU]           =',params2.aAU )
     print('  rp = Rplan/Rstar =',params.rp   )
     print('  ecc              =',params.ecc  )
     print('  w                =',params.w    )
     print('  u1               =',params.u[0] )
     print('  u2               =',params.u[1] )
-    print('  q1 (juliet)      =', q1 )
-    print('  q2 (juliet)      =', q2 )
-    print('  inc [deg]        =',params.inc )
+    print('  q1 (juliet)      =',       q1   )
+    print('  q2 (juliet)      =',       q2   )
+    print('  inc [deg]        =',params.inc      )
     print('  b                =',params2.b       )
     print('  rhostar [g/cm3]  =',params2.rhostar )
     print('  rhoplan [g/cm3]  =',params2.rhoplan )
