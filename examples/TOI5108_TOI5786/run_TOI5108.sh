@@ -43,12 +43,12 @@
 # awk '($4=="MAHPS"  && $3<10.){print $1,$2      ,$3,$4}' toi5108.dat > TOI5108_RV_MaHPS.dat
 # awk '($4=="MAHPS"  && $3<10.){print $1,$2      ,$3,$4}' toi5108.dat > TOI5108_RV_MaHPS.dat
 
-# ../../planet_fast_fit.py -save TOI0186_TIC279741379.pdf   -Mstar 1.10 -Rstar 1.29  -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC350348197_SEC45.fits  -rv TOI5108_RV_SOPHIE.dat
+# ../../planet_fast_fit.py -save TOI5108_TIC0350348197.pdf   -Mstar 1.10 -Rstar 1.29  -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC0350348197_SEC45.fits  -rv TOI5108_RV_SOPHIE.dat
 
-  ../../planet_fast_fit.py -save TOI0186_TIC279741379.pdf   -Mstar 1.10 -Rstar 1.29  -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
-# ../../planet_fast_fit.py -save TOI0186_TIC279741379.pdf   -Mstar 1.10   -a 12.2    -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
-# ../../planet_fast_fit.py -save TOI0186_TIC279741379.pdf   -Mstar 1.10              -rhostar 0.745  -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
+  ../../planet_fast_fit.py -save TOI0186_planet_fast_fit.pdf   -Mstar 1.10 -Rstar 1.29  -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC0350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
+# ../../planet_fast_fit.py -save TOI5108_TIC0350348197.pdf   -Mstar 1.10   -a 12.2    -rhostar 0      -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC0350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
+# ../../planet_fast_fit.py -save TOI5108_TIC0350348197.pdf   -Mstar 1.10              -rhostar 0.745  -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.0472  -u1 0.408 -u2 0.102 -b 0.871  -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC0350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
 
 # vary rhostar <-> b and u1,u2 and rp
-# ../../planet_fast_fit.py -save TOI0186_TIC279741379.pdf   -Mstar 1.10              -rhostar 1.0    -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.047   -u1 0.4   -u2 0.1   -b 0.85   -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
+# ../../planet_fast_fit.py -save TOI5108_TIC0350348197.pdf   -Mstar 1.10              -rhostar 1.0    -P 6.753581  -t0 9569.4778  -y0 0.993 -y1 1.003 -rp 0.047   -u1 0.4   -u2 0.1   -b 0.85   -K 9.9  -off 0 -e 0.0  -z 10 -alpha 0.5   TOI5108_TIC0350348197_SEC45.fits  -rv TOI5108_RV_MaHPS.dat
 
