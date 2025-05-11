@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-05-10 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 2025-05-11 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -1589,10 +1589,17 @@ else :
             params2.rhostar = calc_rhostar__Mstar_Rstar(params2)
             params.a        = calc_aR__rhostar_per(params,params2)   # semi-major axis (in units of stellar radii)
             params2.aAU     =  params.a * (params2.Rstar*Rsun) / AU
+        elif args.Mstar == 0. and args.Rstar == 0. :
+            params2.Mstar   = 1.
+            params2.Rstar   = 1.
+            params2.rhostar = calc_rhostar__Mstar_Rstar(params2)
+            params.a        = calc_aR__rhostar_per(params,params2)   # semi-major axis (in units of stellar radii)
         else :
             print("inconsistent given parameters:")
             print("args.a       = ",args.a)
             print("args.rhostar = ",args.rhostar)
+            print("args.Mstar   = ",args.Mstar)
+            print("args.Rstar   = ",args.Rstar)
             print("args.P       = ",args.P)
             exit(-1)
     else :
