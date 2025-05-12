@@ -72,5 +72,5 @@ python ../../planet_fast_fit.py  -save TOI1295_planet_fast_fit.pdf  -tit "TOI 12
 #  dur [min]        = 223.6716569041511
 #  depth            = 8.85876492975035
 #
-python ../../planet_fast_fit.py  -save TOI1295_planet_fast_fit_AR_250511.pdf  -tit "TOI 1295:" -P 3.199632  -t0 9926.17135  -rp 0.09095  -b 0.543  -e 0.  -w 90  -rhostar 0.48   -K 153.  -off 62.  -u1 0.6  -u2 -0.3   -Ms 0.81    -zoom 3  -alpha 0.15  -rv TOI1295_RV_MaHPS.dat  TOI1295_TIC0219852584_SEC59.fits
+# python ../../planet_fast_fit.py  -save TOI1295_planet_fast_fit_AR_250511.pdf  -tit "TOI 1295:" -P 3.199632  -t0 9926.17135  -rp 0.09095  -b 0.543  -e 0.  -w 90  -rhostar 0.48   -K 153.  -off 62.  -u1 0.6  -u2 -0.3   -Ms 0.81    -zoom 3  -alpha 0.15  -rv TOI1295_RV_MaHPS.dat  TOI1295_TIC0219852584_SEC59.fits
 
