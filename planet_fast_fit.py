@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-05-11 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 2025-05-15 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -52,7 +52,7 @@ AU        = 1.49597871e11 # m
 #  offset
 
 
-###########################################################################################################
+#####################################################################################################
 
 def get_TESS_data(lc_filename) :
     data = fits.getdata(lc_filename)
@@ -301,7 +301,7 @@ def calc_Mplan__K(params,params2) :
                        1/(1.-params.ecc**2) ) / Mearth
     return Mp
 
-###########################################################################################################
+#####################################################################################################
 
 def update_plot1(params,params2) :
     global myalpha
@@ -309,18 +309,18 @@ def update_plot1(params,params2) :
     m1 = batman.TransitModel(params, t1)
     f1 = params2.bg + params2.F0 * m1.light_curve(params)
     model1.set_ydata(f1)
-    if lc_filename!='' :
+    if lc_files!=[] :
         data1.set_alpha(myalpha)
 
 def update_plot2(params,params2) :
     global myalpha
-    global lc_filename
+    global lc_files
     t2 = np.linspace(params.t0-params.per/2/zoom, params.t0+params.per/2/zoom, prec)
     m2 = batman.TransitModel(params, t2)
     f2 = params2.bg + params2.F0 * m2.light_curve(params)
     model2.set_xdata(t2-params.t0)
     model2.set_ydata(f2)
-    if lc_filename!='' :
+    if lc_files!=[] :
         data2.set_xdata( (tdata - params.t0 + params.per/2. ) % params.per - params.per/2. )
         data2.set_alpha(myalpha)
     # newlalpha = myalpha*zoom*params.per/(tmin+tmax)
@@ -375,7 +375,7 @@ def update_orbit(params,params2) :
     size=1.15*(params.a*params2.Rstar*Rsun/AU*(1-params.ecc**2))/(1-params.ecc)
     ax6.axis([-size,size,-size,size])
 
-###########################################################################################################
+#####################################################################################################
 
 # def update_sliders(params,params2) :
 #     global     slider_aR,slider_rhostar,slider_Rstar,slider_Mstar,slider_rhoplan,slider_Rplan,slider_Mplan,slider_rp,slider_b,slider_inc,slider_u1,slider_u2,slider_ecc,slider_w,slider_F0,slider_bg,slider_rv_K,slider_rv_offset
@@ -1281,7 +1281,7 @@ def slider_update_rv_offset(val) :
 #          plt.gcf().canvas.draw_idle()
 
 
-############################################################### MAIN ###############################################################
+############################################################### MAIN ################################
 
 marker_style = dict(linestyle='',  marker='o', fillstyle='full', markeredgewidth=0)
 line_style   = dict(linestyle='-', marker='')
@@ -1323,6 +1323,7 @@ parser.add_argument('-y0',      dest='y0',          type=float, default=0,      
 parser.add_argument('-y1',      dest='y1',          type=float, default=0,      help='[%(default)s] y1')
 parser.add_argument('-zoom',    dest='zoom',        type=float, default=1.,     help='[%(default)s] zoom')
 parser.add_argument('-alpha',   dest='alpha',       type=float, default=0.05,   help='[%(default)s] alpha')
+parser.add_argument('-alpharv', dest='alpharv',     type=float, default=0.5,    help='[%(default)s] alpharv')
 parser.add_argument('-F0',      dest='F0',          type=float, default=1.,     help='[%(default)s] F0')
 parser.add_argument('-bg',      dest='bg',          type=float, default=0.,     help='[%(default)s] bg')
 parser.add_argument('-K',       dest='K',           type=float, default=0.,     help='[%(default)s] K')
@@ -1346,11 +1347,12 @@ if args.t0>2450000 :
 #    print("no light curve specified")
 #    exit(-1)
 
-lc_filename=''
+lc_files = []
 if len(args.files)!=0 :
-    lc_filename=args.files[0]
+    #lc_files=args.files[0]
+    lc_files=args.files
 if args.lc_filename!='' :
-    lc_filename=args.lc_filename
+    lc_files=[args.lc_filename]
 
 rv_filename = args.rv_filename
 
@@ -1367,38 +1369,45 @@ print('loading LC data:')
 
 norm = 1.
 myalpha    = args.alpha
-myalpha_rv = args.alpha
+myalpha_rv = args.alpharv
+if lc_files != [] :
+    tdata = np.zeros(0)
+    Fdata = np.zeros(0)
+    edata = np.zeros(0)
+    for lc_filename in lc_files : 
+        print("  ",lc_filename)
+        #if lc_filename.endswith('.fits') and not lc_filename.endswith('tp.fits') and not lc_filename.endswith('dvt.fits') :
+        if lc_filename.endswith('.fits') :
+            tdata_in, Fdata_in, edata_in  = get_TESS_data(lc_filename)
+        elif lc_filename.endswith('.csv') :
+            # awk '(NR>1){print $5,$15,$25}' TIC233497719-01_202*.tbl > TOI1877_43cm.tab
+            tdata_in, Fdata_in, edata_in  = get_TESS_data_tab(lc_filename)
+        elif lc_filename.endswith('.tab') or lc_filename.endswith('.tbl') :
+            # awk '(NR>1){print $5,$15,$25}' TIC233497719-01_202*.tbl > TOI1877_43cm.tab
+            tdata_in, Fdata_in, edata_in  = get_WST_data(lc_filename)
+        else :
+            print('  no flux data')
+            #continue
+            exit(-1)
+    
+        #print(tdata.ndim)
+        #print(Fdata.ndim)
+        #print(edata.ndim)
+        #print(tdata[0:10])
+        #print(Fdata[0:10])
+        #print(edata[0:10])
+    
+        if (args.norm==0.) :
+            norm = np.median(Fdata_in)
+            #norm = np.percentile(Fdata,95.)
+        else :
+            norm = args.norm
+        Fdata_in /= norm
+        edata_in /= norm
 
-if lc_filename!='' :
-    print("  ",lc_filename)
-    #if lc_filename.endswith('.fits') and not lc_filename.endswith('tp.fits') and not lc_filename.endswith('dvt.fits') :
-    if lc_filename.endswith('.fits') :
-        tdata, Fdata, edata  = get_TESS_data(lc_filename)
-    elif lc_filename.endswith('.csv') :
-        # awk '(NR>1){print $5,$15,$25}' TIC233497719-01_202*.tbl > TOI1877_43cm.tab
-        tdata, Fdata, edata  = get_TESS_data_tab(lc_filename)
-    elif lc_filename.endswith('.tab') or lc_filename.endswith('.tbl') :
-        # awk '(NR>1){print $5,$15,$25}' TIC233497719-01_202*.tbl > TOI1877_43cm.tab
-        tdata, Fdata, edata  = get_WST_data(lc_filename)
-    else :
-        print('  no flux data')
-        #continue
-        exit(-1)
-
-    #print(tdata.ndim)
-    #print(Fdata.ndim)
-    #print(edata.ndim)
-    #print(tdata[0:10])
-    #print(Fdata[0:10])
-    #print(edata[0:10])
-
-    if (args.norm==0.) :
-        norm = np.median(Fdata)
-        #norm = np.percentile(Fdata,95.)
-    else :
-        norm = args.norm
-    Fdata /= norm
-    edata /= norm
+        tdata = np.concatenate((tdata,tdata_in))
+        Fdata = np.concatenate((Fdata,Fdata_in))
+        edata = np.concatenate((edata,edata_in))
 
     [tmin,tmax] = [np.min(tdata),np.max(tdata)]
     [ymin,ymax] = [np.min(Fdata),np.max(Fdata)]
@@ -1421,7 +1430,7 @@ if rv_filename!='' :
     print("  ",rv_filename)
     x_rv, y_rv, err_rv  = np.genfromtxt(rv_filename, comments='#',dtype="f8,f8,f8", unpack=True)
     x_rv -= 2450000.
-    if lc_filename=='' :
+    if lc_files==[] :
         t0start = (np.min(x_rv)+np.max(x_rv))/2.
         [tmin,tmax]  = [t0start-2.5*args.P,t0start+2.5*args.P]
         [ymin,ymax] = [0.9,1.1]
@@ -1812,7 +1821,7 @@ params2.offset = args.offset
 if rv_filename!='' :
     [tmin_rv,tmax_rv]  = [np.min(x_rv),np.max(x_rv)]
     [ymin_rv,ymax_rv]  = [np.min(y_rv),np.max(y_rv)]
-elif lc_filename!='' :
+elif lc_files!=[] :
     [tmin_rv,tmax_rv] = [tmin,tmax]
     [ymin_rv,ymax_rv] = [params2.offset-2*params2.K,params2.offset+2*params2.K]
 else :
@@ -1831,7 +1840,7 @@ if args.Pmax==0 and args.P!=2.:
 if args.x0!=0. and args.x1!=0. :
     [xstart,xend] = [args.x0,args.x1]
 else :
-    if lc_filename!='' :
+    if lc_files!=[] :
         [xstart,xend] = calc_xlim(tdata)
     elif rv_filename!='' :
         # [xstart,xend] = calc_xlim(x_rv)
@@ -1843,7 +1852,7 @@ else :
 if args.y0!=0. and args.y1!=0. :
     [ystart,yend] = [args.y0,args.y1]
 else :
-    if lc_filename!='' :
+    if lc_files!=[] :
         [ystart,yend] = calc_ylim(Fdata)
     else :
         # [ystart,yend] = calc_ylim(f1)
@@ -1869,12 +1878,13 @@ if onlyplot :
     ax1.plot( tdata, Fdata, c='b' ,zorder=0, alpha=myalpha, ms=7, **marker_style)
     ax1.set_xlim([xstart,xend])
     ax1.set_ylim([ystart,yend])
-    ax1.set_title(lc_filename)
+    if lc_files!=[] :
+        ax1.set_title(lc_files[0])
     ax1.set_xlabel("Julian Date - 2450000 [d]")
     ax1.set_ylabel("normalized flux")
     #ax1.xaxis.set_minor_locator(AutoMinorLocator(n=4))
     #ax1.yaxis.set_minor_locator(AutoMinorLocator(n=4))
-    plt.savefig(lc_filename+'.pdf')
+    plt.savefig(lc_files[0]+'.pdf')
     plt.show()
     exit(-1)
 
@@ -1903,8 +1913,17 @@ ax5 = plt.axes([xx2+lx-0.015, yy2, ly, ly], facecolor='w', ylabel=None) # star-p
 ax6 = plt.axes([xx2+lx-0.015, yy1, ly, ly], facecolor='w', ylabel=None) # orbit
 
 ax0.axis('off')
-#print(">>>>>>>>>>>>>>.",lc_filename)
-ax0.text(0.5,0.5,args.tit+'  '+lc_filename+'  '+rv_filename,size = 12, va='center_baseline', ha='center', color='k')
+#print(">>>>>>>>>>>>>>.",lc_files)
+title_text=''
+if lc_files!=[] and rv_filename!=0 :
+    title_text = args.tit+'  '+lc_files[0]+'  '+rv_filename
+elif lc_files!=[] :
+    title_text = args.tit+'  '+lc_files[0]
+elif rv_filename!=0 :
+    title_text = args.tit+'  '+rv_filename
+else :
+    title_text = args.tit
+ax0.text(0.5,0.5,title_text,size = 12, va='center_baseline', ha='center', color='k')
 
 #ax1.xaxis.set_minor_locator(tkr.AutoMinorLocator(n=5))
 #ax1.yaxis.set_minor_locator(tkr.AutoMinorLocator(n=5))
@@ -2157,12 +2176,12 @@ if args.tex :
 slider_x    = RangeSlider(ax_x,         title_x,       valmin=xstart,         valmax=xend,           valfmt="%1.1f", valinit=(xstart,xend),   color='lightblue')
 slider_y    = RangeSlider(ax_y,         title_y,       valmin=ystart,         valmax=yend,            valfmt="%1.3f", valinit=(ystart,yend),   color='lightblue')
 slider_zoom      = Slider(ax_zoom,      title_zoom,    valmin=0.01,           valmax=20.,            valfmt="%1.3f", valinit=zoom,            color='lightblue')
-slider_alpha     = Slider(ax_alpha,     title_alpha,   valmin=0.01,           valmax=1.,             valfmt="%1.3f", valinit=myalpha,         color='lightblue')
+slider_alpha     = Slider(ax_alpha,     title_alpha,   valmin=0.005,           valmax=1.,             valfmt="%1.3f", valinit=myalpha,         color='lightblue')
 slider_x_rv = RangeSlider(ax_x_rv,      title_x,       valmin=xstart_rv,      valmax=xend_rv,        valfmt="%1.1f", valinit=(xstart_rv,xend_rv), color='lightblue')
 slider_y_rv = RangeSlider(ax_y_rv,      title_y,       valmin=ystart_rv,      valmax=yend_rv,        valfmt="%1.0f", valinit=(ystart_rv,yend_rv), color='lightblue')
 slider_zoom_rv   = Slider(ax_zoom_rv,   title_zoom,    valmin=0.01,           valmax=20.,            valfmt="%1.3f", valinit=zoom_rv,         color='lightblue')
 slider_alpha_rv  = Slider(ax_alpha_rv,  title_alpha,   valmin=0.01,           valmax=1.,             valfmt="%1.3f", valinit=myalpha_rv,      color='lightblue')
-slider_t0        = Slider(ax_t0,        title_t0,      valmin=t0start-10.,    valmax=t0start+10.,    valfmt="%1.3f", valinit=params.t0,       color='g')
+slider_t0        = Slider(ax_t0,        title_t0,      valmin=tmin,    valmax=tmax,    valfmt="%1.3f", valinit=params.t0,       color='g')
 slider_t0fine    = Slider(ax_t0fine,    title_t0fine,  valmin=t0start-0.1,    valmax=t0start+0.1,    valfmt="%1.3f", valinit=params.t0,       color='g')
 slider_per       = Slider(ax_per,       title_per,     valmin=0.1,            valmax=Pmax,           valfmt="%1.3f", valinit=params.per,      color='g')
 slider_perfine   = Slider(ax_perfine,   title_perfine, valmin=params.per-0.5, valmax=params.per+0.5, valfmt="%1.3f", valinit=params.per,      color='g')
@@ -2265,7 +2284,7 @@ slider_rv_offset.on_changed(slider_update_rv_offset)
 
 ############################### plotting data
 
-if lc_filename!='' :
+if lc_files!=[] :
     data1, = ax1.plot( tdata,
                        Fdata, c='b' ,zorder=0, alpha=myalpha, ms=5, **marker_style)
     data2, = ax2.plot( (tdata - params.t0 + params.per/2. ) % params.per - params.per/2.,
@@ -2304,7 +2323,7 @@ f1 = calc_lc(t1,params,params2)
 t2 = np.linspace(params.t0-params.per/2/zoom, params.t0+params.per/2/zoom, prec)
 f2 = calc_lc(t2,params,params2)
 
-model1, = ax1.plot(t1,           f1, color='r', **line_style, zorder=3, alpha=0.8)
+model1, = ax1.plot(t1,           f1, color='r', **line_style, zorder=3, alpha=0.5)
 model2, = ax2.plot(t2-params.t0, f2, color='r', **line_style, zorder=3, alpha=0.8)
 
 params2.depth = calc_depth(params,params2)
@@ -2316,11 +2335,11 @@ rv1 = calc_rv(t1_rv,params,params2)
 t2_rv = np.linspace(params.t0-params.per/2, params.t0+params.per/2, prec)
 rv2 = calc_rv(t2_rv,params,params2)
 
-model_rv_1, = ax3.plot(t1_rv,             rv1, color='r', alpha=0.3)
+model_rv_1, = ax3.plot(t1_rv,             rv1, color='r', alpha=0.5)
 model_rv_2, = ax4.plot(t2_rv - params.t0, rv2, color='r', alpha=0.8)
 
-if lc_filename!='' :
-  model1.figure.canvas.manager.set_window_title(lc_filename)
+if lc_files!=[] :
+  model1.figure.canvas.manager.set_window_title(lc_files[0])
 else :
   model1.figure.canvas.manager.set_window_title(rv_filename)
 # model1.figure.canvas.manager.set_window_title(args.files[0])
