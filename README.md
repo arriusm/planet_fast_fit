@@ -1,22 +1,29 @@
 ```
-usage: planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME]
-                          [-save SAVE] [-tex] [-tit TIT] [-Pmax PMAX]
-                          [-amax AMAX] [-t0 T0] [-P P] [-Mstar MSTAR]
-                          [-Mplan MPLAN] [-rp RP] [-Rstar RSTAR]
-                          [-Rplan RPLAN] [-REB REB] [-a A] [-rhostar RHOSTAR]
-                          [-rhoplan RHOPLAN] [-b B] [-i I] [-u1 U1] [-u2 U2]
-                          [-e E] [-w W] [-norm NORM] [-x0 X0] [-x1 X1]
-                          [-y0 Y0] [-y1 Y1] [-zoom ZOOM] [-alpha ALPHA]
-                          [-alpharv ALPHARV] [-F0 F0] [-bg BG]
-                          [-K K] [-off OFFSET] [-prec PREC]
-                          [files ...]
-
+# planet fast fit
 Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)
 
-positional arguments:
-  files             lc_files
+## usage:
+```
+planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME]
+                   [-save SAVE] [-tex] [-tit TIT] [-Pmax PMAX]
+                   [-amax AMAX] [-t0 T0] [-P P] [-Mstar MSTAR]
+                   [-Mplan MPLAN] [-rp RP] [-Rstar RSTAR]
+                   [-Rplan RPLAN] [-REB REB] [-a A] [-rhostar RHOSTAR]
+                   [-rhoplan RHOPLAN] [-b B] [-i I] [-u1 U1] [-u2 U2]
+                   [-e E] [-w W] [-norm NORM] [-x0 X0] [-x1 X1]
+                   [-y0 Y0] [-y1 Y1] [-zoom ZOOM] [-alpha ALPHA]
+                   [-alpharv ALPHARV] [-F0 F0] [-bg BG]
+                   [-K K] [-off OFFSET] [-prec PREC]
+                   [files ...]
+```
 
-options:
+## positional arguments:
+```
+  files             lc_files
+```
+
+## options:
+```
   -h, --help        show this help message and exit
   -lc LC_FILENAME   [] lc_filename
   -rv RV_FILENAME   [] rv_filename
