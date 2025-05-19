@@ -1,5 +1,5 @@
 # planet fast fit
-Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)
+Vers. 1.0 (2025-05-19) (c) Arno Riffeser (arri@usm.lmu.de)
 
 ## usage:
 ```
