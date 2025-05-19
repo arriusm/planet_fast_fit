@@ -1,4 +1,3 @@
-```
 # planet fast fit
 Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)
 
