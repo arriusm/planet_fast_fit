@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 1.0 (2025-05-19) (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -116,28 +116,28 @@ def calc_orbit_y(phi,params) :
 #############
 
 def calc_xlim(t) :
-    xmin = np.min(t)
-    xmax = np.max(t)
-    Dx = xmax-xmin
-    return [xmin-0.025*Dx,xmax+0.025*Dx]
+    xxmin = np.min(t)
+    xxmax = np.max(t)
+    Dx = xxmax-xxmin
+    return [xxmin-0.025*Dx,xxmax+0.025*Dx]
 
 def calc_ylim(flux) :
-    ymin = np.min(flux)
-    ymax = np.max(flux)
-    Dy = ymax-ymin
-    return [ymin-0.25*Dy,ymax+0.25*Dy]
+    yymin = np.min(flux)
+    yymax = np.max(flux)
+    Dy = yymax-yymin
+    return [yymin-0.25*Dy,yymax+0.25*Dy]
 
 def calc_rv_xlim(t) :
-    xmin_rv = np.min(t)
-    xmax_rv = np.max(t)
-    Dx = xmax_rv-xmin_rv
-    return [xmin_rv-0.025*Dx,xmax_rv+0.025*Dx]
+    xxmin_rv = np.min(t)
+    xxmax_rv = np.max(t)
+    Dx = xxmax_rv-xxmin_rv
+    return [xxmin_rv-0.025*Dx,xxmax_rv+0.025*Dx]
 
 def calc_rv_ylim(y) :
-    ymin_rv = np.min(y)
-    ymax_rv = np.max(y)
-    Dy = ymax_rv-ymin_rv
-    return [ymin_rv-0.2*Dy,ymax_rv+0.2*Dy]
+    yymin_rv = np.min(y)
+    yymax_rv = np.max(y)
+    Dy = yymax_rv-yymin_rv
+    return [yymin_rv-0.2*Dy,yymax_rv+0.2*Dy]
 
 #############
 
@@ -169,9 +169,9 @@ def calc_depth(params,params2) :
     #(x,y) = model2.get_data()
     #ymax = np.max(y)
     #ymin = np.min(y)
-    ymax = params2.bg + params2.F0 
-    ymin = calc_lc(np.array([params.t0]),params,params2)[0]
-    return (ymax-ymin) * 1000.
+    yymax = params2.bg + params2.F0 
+    yymin = calc_lc(np.array([params.t0]),params,params2)[0]
+    return (yymax-yymin) * 1000.
 
 def calc_dur(params,params2) :
     # tau_num = 0.
@@ -505,9 +505,13 @@ def slider_update_t0(val) :
         params.t0 = val
         slider_t0.set_val(params.t0)
         slider_t0fine.set_val(params.t0)
-        slider_t0fine.valmin = params.t0-0.1
-        slider_t0fine.valmax = params.t0+0.1
-        ax_t0fine.set_xlim( params.t0-0.1, params.t0+0.1)
+        slider_t0fine.valmin = params.t0-1.
+        slider_t0fine.valmax = params.t0+1.
+        slider_t0finest.set_val(params.t0)
+        slider_t0finest.valmin = params.t0-0.01
+        slider_t0finest.valmax = params.t0+0.01
+        ax_t0fine.set_xlim( params.t0-1, params.t0+1)
+        ax_t0finest.set_xlim( params.t0-0.01, params.t0+0.01)
         update_plot1(params,params2)
         update_plot2(params,params2)
         line1.set_xdata([params.t0,params.t0])
@@ -522,6 +526,26 @@ def slider_update_t0fine(val) :
         params.t0 = val
         slider_t0.set_val(params.t0)
         slider_t0fine.set_val(params.t0)
+        slider_t0finest.set_val(params.t0)
+        slider_t0finest.set_val(params.t0)
+        slider_t0finest.valmin = params.t0-0.01
+        slider_t0finest.valmax = params.t0+0.01
+        ax_t0finest.set_xlim( params.t0-0.01, params.t0+0.01)
+        update_plot1(params,params2)
+        update_plot2(params,params2)
+        line1.set_xdata([params.t0,params.t0])
+        update_plot_rv_1(params,params2)
+        update_plot_rv_2(params,params2)
+        line_rv_1.set_xdata([params.t0,params.t0])
+        plt.gcf().canvas.draw_idle()
+
+def slider_update_t0finest(val) :
+    global params,params2
+    if params.t0 != val :
+        params.t0 = val
+        slider_t0.set_val(params.t0)
+        slider_t0fine.set_val(params.t0)
+        slider_t0finest.set_val(params.t0)
         update_plot1(params,params2)
         update_plot2(params,params2)
         line1.set_xdata([params.t0,params.t0])
@@ -1299,24 +1323,24 @@ parser.add_argument('-tex',     dest='tex',         action='store_true',        
 parser.add_argument('-tit',     dest='tit',         type=str,   default='',     help='[%(default)s] Titel')
 parser.add_argument('-Pmax',    dest='Pmax',        type=float, default='0',    help='[%(default)s] Pmax')
 parser.add_argument('-amax',    dest='amax',        type=float, default='0',    help='[%(default)s] amax')
-parser.add_argument('-t0',      dest='t0',          type=float, default='999',  help='[%(default)s] t0 [JD - 2450000]')
-parser.add_argument('-P',       dest='P',           type=float, default='2.',   help='[%(default)s] Periode P')
+parser.add_argument('-t0',      dest='t0',          type=float, default='0',    help='[%(default)s] t0 [JD - 2450000]')
+parser.add_argument('-P',       dest='P',           type=float, default='0',    help='[%(default)s] Periode P')
 parser.add_argument('-Mstar',   dest='Mstar',       type=float, default='0',    help='[%(default)s] Masse Stern  / Mstar')
 parser.add_argument('-Mplan',   dest='Mplan',       type=float, default='0',    help='[%(default)s] Masse Planet / Mplan')
 parser.add_argument('-rp',      dest='rp',          type=float, default='0',    help='[%(default)s] Radiusverhaeltnis rp')
 parser.add_argument('-Rstar',   dest='Rstar',       type=float, default='0',    help='[%(default)s] Radius Stern Rstar')
 parser.add_argument('-Rplan',   dest='Rplan',       type=float, default='0',    help='[%(default)s] Radius Planet Rplan')
 parser.add_argument('-REB',     dest='REB',         type=float, default='0',    help='[%(default)s] Radius EB 2nd star')
-parser.add_argument('-a',       dest='a',           type=float, default='0.',   help='[%(default)s] Grosse Halbachse a')
-parser.add_argument('-rhostar', dest='rhostar',     type=float, default='0.',   help='[%(default)s] mittl. Sterndichte rhostar')
-parser.add_argument('-rhoplan', dest='rhoplan',     type=float, default='0.0',  help='[%(default)s] mittl. Planetendichte rhoplan')
-parser.add_argument('-b',       dest='b',           type=float, default='0.',   help='[%(default)s] Impaktparameter b')
-parser.add_argument('-i',       dest='i',           type=float, default='0.',   help='[%(default)s] Inklination i')
-parser.add_argument('-u1',      dest='u1',          type=float, default='0.',   help='[%(default)s] Limb-Darkening u1')
-parser.add_argument('-u2',      dest='u2',          type=float, default='0.',   help='[%(default)s] Limb-Darkening u2')
-parser.add_argument('-e',       dest='e',           type=float, default='0.',   help='[%(default)s] Excentrizitaet e')
-parser.add_argument('-w',       dest='w',           type=float, default='90.',  help='[%(default)s] Argument Periastron w')
-parser.add_argument('-norm',    dest='norm',        type=float, default='0.',   help='[%(default)s] norm')
+parser.add_argument('-a',       dest='a',           type=float, default='0',    help='[%(default)s] Grosse Halbachse a')
+parser.add_argument('-rhostar', dest='rhostar',     type=float, default='0',    help='[%(default)s] mittl. Sterndichte rhostar')
+parser.add_argument('-rhoplan', dest='rhoplan',     type=float, default='0',    help='[%(default)s] mittl. Planetendichte rhoplan')
+parser.add_argument('-b',       dest='b',           type=float, default='0',    help='[%(default)s] Impaktparameter b')
+parser.add_argument('-i',       dest='i',           type=float, default='0',    help='[%(default)s] Inklination i')
+parser.add_argument('-u1',      dest='u1',          type=float, default='0',    help='[%(default)s] Limb-Darkening u1')
+parser.add_argument('-u2',      dest='u2',          type=float, default='0',    help='[%(default)s] Limb-Darkening u2')
+parser.add_argument('-e',       dest='e',           type=float, default='0',    help='[%(default)s] Excentrizitaet e')
+parser.add_argument('-w',       dest='w',           type=float, default='90',   help='[%(default)s] Argument Periastron w')
+parser.add_argument('-norm',    dest='norm',        type=float, default='0',    help='[%(default)s] norm')
 parser.add_argument('-x0',      dest='x0',          type=float, default=0,      help='[%(default)s] x0')
 parser.add_argument('-x1',      dest='x1',          type=float, default=0,      help='[%(default)s] x1')
 parser.add_argument('-y0',      dest='y0',          type=float, default=0,      help='[%(default)s] y0')
@@ -1374,7 +1398,8 @@ if lc_files != [] :
     tdata = np.zeros(0)
     Fdata = np.zeros(0)
     edata = np.zeros(0)
-    print('  {:<60s}   {:<10s}   {:<10s}   {:<5s}'.format('lc_filename','norm','normmed','reldif*10000'))
+    #print('  {:<60s}   {:<10s}   {:<10s}   {:<5s}'.format('lc_filename','norm','normmed','reldif*10000'))
+    #print('  {:<60s}   {:<10s}'.format('lc_filename','norm'))
     for lc_filename in lc_files : 
         #if lc_filename.endswith('.fits') and not lc_filename.endswith('tp.fits') and not lc_filename.endswith('dvt.fits') :
         if lc_filename.endswith('.fits') :
@@ -1398,13 +1423,16 @@ if lc_files != [] :
         #print(edata[0:10])
     
         if (args.norm==0.) :
-            norm = np.percentile(Fdata_in,50)
+            #norm = np.percentile(Fdata_in,50)
             norm = (np.percentile(Fdata_in,10)+np.percentile(Fdata_in,90))/2.
+            #norm = np.percentile(Fdata_in,80)
             normmed = np.median(Fdata_in)
         else :
             norm = args.norm
  
-        print('  {:<60s}   {:<10.3f}   {:<10.3f}   {:<5.1f}'.format(lc_filename,norm,normmed,(normmed-norm)/norm*10000))
+        #print('  {:<60s}   {:<10.3f}   {:<10.3f}   {:<5.1f}'.format(lc_filename,norm,normmed,(normmed-norm)/norm*10000))
+        print('  {:<60s}'.format(lc_filename))
+        print('    norm = {:<10.3f}'.format(norm))
 
         Fdata_in /= norm
         edata_in /= norm
@@ -1413,8 +1441,8 @@ if lc_files != [] :
         Fdata = np.concatenate((Fdata,Fdata_in))
         edata = np.concatenate((edata,edata_in))
 
-    [tmin,tmax] = [np.min(tdata),np.max(tdata)]
-    [ymin,ymax] = [np.min(Fdata),np.max(Fdata)]
+    #[tmin,tmax] = [np.min(tdata),np.max(tdata)]
+    #[ymin,ymax] = [np.min(Fdata),np.max(Fdata)]
 else :
     print("  no LC data specified")
 
@@ -1434,17 +1462,15 @@ if rv_filename!='' :
     print("  ",rv_filename)
     x_rv, y_rv, err_rv  = np.genfromtxt(rv_filename, comments='#',dtype="f8,f8,f8", unpack=True)
     x_rv -= 2450000.
-    if lc_files==[] :
-        t0start = (np.min(x_rv)+np.max(x_rv))/2.
-        [tmin,tmax]  = [t0start-2.5*args.P,t0start+2.5*args.P]
-        [ymin,ymax] = [0.9,1.1]
+    #if lc_files==[] :
+    #    t0start = (np.min(x_rv)+np.max(x_rv))/2.
+    #    Deltat = np.max(x_rv)-np.min(x_rv)
+    #    #[tmin,tmax]  = [t0start-2.5*args.P,t0start+2.5*args.P]
+    #    #[tmin,tmax]  = [t0start-0.6*Deltat,t0start+0.6*Deltat]
+    #    #[ymin,ymax] = [0.9,1.1]
 else :
     print("  no RV data specified")
 
-if args.t0==999 :
-    t0start = (tmin+tmax)/2.
-else :
-    t0start = args.t0
 
 
 
@@ -1477,9 +1503,25 @@ else :
 #rc_filename = '51Peg_RV_WST_2-1m.tab'     # 51 Peg Wendelstein
 
 
-#print("tmin_rv,tmax_rv = ",tmin_rv,tmax_rv)
-#print("ymin_rv,ymax_rv = ",ymin_rv,ymax_rv)
+############ x plotting areas and slider ranges
 
+if args.x0!=0. and args.x1!=0. :
+    [xstart,xend]       = [args.x0,args.x1]
+    [xstart_rv,xend_rv] = [args.x0,args.x1]
+else :
+    if lc_files!=[] and rv_filename!='' :
+        [xstart,xend]       = calc_xlim(tdata)
+        [xstart_rv,xend_rv] = calc_rv_xlim(x_rv)
+    elif lc_files!=[] :
+        [xstart,xend]       = calc_xlim(tdata)
+        [xstart_rv,xend_rv] = [xstart,xend]
+    elif rv_filename!='' :
+        [xstart_rv,xend_rv] = calc_rv_xlim(x_rv)
+        [xstart,xend]       = [xstart_rv,xend_rv] 
+    else :
+        [xstart,xend] = [tmin,tmax]
+        [xstart_rv,xend_rv] = [tmin,tmax]
+[xmin,xmax] = [min([xstart,xstart_rv]),max([xend,xend_rv])]
 
 ################################ model parameters
 
@@ -1511,7 +1553,6 @@ class OtherParams :
 params  = batman.TransitParams()
 params2 = OtherParams()
 
-
 def print_all(params,params2) :
     q1 = (params.u[0]+params.u[1])**2                    # Kipping 2013 Eq. 17
     if (params.u[0]+params.u[1])==0. :
@@ -1520,6 +1561,8 @@ def print_all(params,params2) :
         q2 = params.u[0]/(2.*(params.u[0]+params.u[1]))  # Kipping 2013 Eq. 18
     print('  x0 [d]           =',  xstart    )
     print('  x1 [d]           =',  xend      )
+    print('  x0_rv [d]        =',  xstart_rv )
+    print('  x1_rv [d]        =',  xend_rv   )
     print('  y0               =',  ystart    )
     print('  y1               =',  yend      )
     print('  y0_rv [km/s]     =',  ystart_rv )
@@ -1553,8 +1596,15 @@ def print_all(params,params2) :
     print('  dur [min]        =',params2.dur*60. )
     print('  depth            =',params2.depth   )
 
-params.t0  = t0start                  # time of inferior conjunction
-params.per = args.P                   # orbital period
+if args.t0!=0 :
+    params.t0 = args.t0                  # time of inferior conjunction
+else :
+    params.t0 = (xstart+xend)/2.
+
+if args.P!=0 :
+    params.per = args.P                  # orbital period
+else :
+    params.per = 2.
 params.rp  = args.rp                  # planet radius (in units of stellar radii)
 params.ecc = args.e                   # eccentricity
 params.w   = args.w                   # longitude of periastron (in degrees)
@@ -1705,9 +1755,10 @@ if args.rp == 0. :
                 print("args.Mplan   = ",args.Mplan)
                 print("args.Rplan   = ",args.Rplan)
                 exit(-1)
+            params2.K       = calc_K__Mplan(params,params2)
             params.rp = calc_rp__Rplan_Rstar(params,params2)
         else :
-            params2.K  = args.K
+            params2.K  = args.K            
             if  args.Mplan == 0. and args.Rplan == 0. :
                 params2.Mplan   = calc_Mplan__K(params,params2)
                 params2.Rplan   = calc_Rplan__rhoplan_Mplan(params2)
@@ -1728,6 +1779,8 @@ else :
     params.rp = args.rp
     if args.Rplan == 0. and params2.Rstar != 0.:
         params2.Rplan = calc_Rplan__rp_Rstar(params,params2)
+        #print('params2.Rstar=',params2.Rstar)
+        #print('params2.Rplan=',params2.Rplan)
     if args.rhoplan == 0. :
         if args.K > 0 :
             params2.K = args.K
@@ -1759,17 +1812,20 @@ else :
                 print("  args.rhoplan = ",args.rhoplan)
                 exit(-1)
         elif args.K == 0 :
-              if args.rhoplan != 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
+              #if args.rhoplan != 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
+              if args.rhoplan != 0. and args.Mplan == 0. and args.Rplan == 0. and params2.Rstar != 0.:
                   params2.rhoplan = args.rhoplan
                   params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
                   params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
                   params2.K       = calc_K__Mplan(params,params2)
-              elif args.rhoplan == 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
+              #elif args.rhoplan == 0. and args.Mplan == 0. and args.Rplan == 0. and args.Rstar != 0.:
+              elif args.rhoplan == 0. and args.Mplan == 0. and args.Rplan == 0. and params2.Rstar != 0.:
                   params2.rhoplan = 1.
                   params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
                   params2.Mplan   = calc_Mplan__rhoplan_Rplan(params2)
                   params2.K       = calc_K__Mplan(params,params2)
-              elif args.Mplan != 0. and args.Rplan == 0. and args.Rstar != 0.:
+              #elif args.Mplan != 0. and args.Rplan == 0. and args.Rstar != 0.:
+              elif args.Mplan != 0. and args.Rplan == 0. and params2.Rstar != 0.:
                   params2.Mplan   = args.Mplan
                   params2.Rplan   = calc_Rplan__rp_Rstar(params,params2)
                   params2.rhoplan = calc_rhoplan__Mplan_Rplan(params2)
@@ -1822,52 +1878,47 @@ params2.offset = args.offset
 #params2.Ms     = 1.
 #params2.MP     = calc_Mplan__K(params,params2)
 
-if rv_filename!='' :
-    [tmin_rv,tmax_rv]  = [np.min(x_rv),np.max(x_rv)]
-    [ymin_rv,ymax_rv]  = [np.min(y_rv),np.max(y_rv)]
-elif lc_files!=[] :
-    [tmin_rv,tmax_rv] = [tmin,tmax]
-    [ymin_rv,ymax_rv] = [params2.offset-2*params2.K,params2.offset+2*params2.K]
-else :
-    [tmin_rv,tmax_rv] = [tmin,tmax]
-    [ymin_rv,ymax_rv] = [-params2.K*1.5,params2.K*1.5]
+    
 
-
-############ plotting areas and slider ranges
+############ y plotting areas and slider ranges
 
 Pmax = 20.
 amax = 20.
-if args.Pmax==0 and args.P!=2.:
+if args.Pmax==0 and args.P!=0.:
     Pmax = 3*args.P
     amax = 3*params.a
 
-if args.x0!=0. and args.x1!=0. :
-    [xstart,xend] = [args.x0,args.x1]
-else :
-    if lc_files!=[] :
-        [xstart,xend] = calc_xlim(tdata)
-    elif rv_filename!='' :
-        # [xstart,xend] = calc_xlim(x_rv)
-        [xstart,xend] = [tmin,tmax]
-    else :
-        # [xstart,xend] = calc_xlim(x_rv)
-        [xstart,xend] = [tmin,tmax]
-
 if args.y0!=0. and args.y1!=0. :
     [ystart,yend] = [args.y0,args.y1]
+    if lc_files!=[] :
+        [ylim0,ylim1]  = calc_ylim(Fdata)
+        [ymin,ymax]  = [min([ylim0,ystart]),max([ylim1,yend])]
+    else :
+        [ymin,ymax] = [min([0.9,ystart]),max([1.1,yend])]
 else :
     if lc_files!=[] :
         [ystart,yend] = calc_ylim(Fdata)
+        [ymin,ymax]  = [min([0.9,ystart]),max([1.1,yend])]
     else :
-        # [ystart,yend] = calc_ylim(f1)
         [ystart,yend] = [0.9,1.1]
+        [ymin,ymax]  =  [0.9,1.1]
 
-[xstart_rv,xend_rv] = [xstart,xend]
-[ystart_rv,yend_rv] = [-params2.K*1.5,params2.K*1.5]
+# if rv_filename!='' :
+#     [ymin_rv,ymax_rv] = [np.min(y_rv),np.max(y_rv)]
+# elif lc_files!=[] :
+#     [ymin_rv,ymax_rv] = [params2.offset-2*params2.K,params2.offset+2*params2.K]
+# else :
+#     [ymin_rv,ymax_rv] = [-params2.K*1.5,params2.K*1.5]
+
 if rv_filename!='' :
-    [xstart_rv,xend_rv] = calc_rv_xlim(x_rv)
     [ystart_rv,yend_rv] = calc_rv_ylim(y_rv)
+    Delta_rv = yend_rv - ystart_rv
+    [ymin_rv,ymax_rv]   = [ystart_rv-0.5*Delta_rv,yend_rv+0.5*Delta_rv,] 
+else :
+    [ystart_rv,yend_rv] = [params2.offset-2*params2.K,params2.offset+2*params2.K]
+    [ymin_rv,ymax_rv]   = [params2.offset-4*params2.K,params2.offset+4*params2.K]
 
+Kmax = (yend_rv - ystart_rv)*0.75
 zoom    = args.zoom
 zoom_rv = 1.
 
@@ -2049,7 +2100,8 @@ start1 = 0.07
 start2 = 0.56
 starty = 0.04
 lenx = 0.38
-Dfin = 0.025
+Pfin = 0.025
+tfin = 0.031
 
 # ax_xstart  = plt.axes([start1,      0.31, lenx,      0.02], facecolor=axcolor)
 # ax_xend    = plt.axes([start2,      0.31, lenx,      0.02], facecolor=axcolor)
@@ -2066,7 +2118,7 @@ ax_zoom_rv   = plt.axes([xx2+0.03,    yy1-0.07, lx-0.06,   0.02], facecolor=axco
 ax_alpha_rv  = plt.axes([xx2+0.03,    yy1-0.09, lx-0.06,   0.02], facecolor=axcolor)
 
 ax_per       = plt.axes([start1,      starty+0.27, lenx,      0.02], facecolor=axcolor)
-ax_perfine   = plt.axes([start1+Dfin, starty+0.25, lenx-Dfin, 0.02], facecolor=axcolor)
+ax_perfine   = plt.axes([start1+Pfin, starty+0.25, lenx-Pfin, 0.02], facecolor=axcolor)
 ax_aR        = plt.axes([start1,      starty+0.22, lenx,      0.02], facecolor=axcolor)
 ax_aAU       = plt.axes([start1,      starty+0.20, lenx,      0.02], facecolor=axcolor)
 ax_Rstar     = plt.axes([start1,      starty+0.17, lenx,      0.02], facecolor=axcolor)
@@ -2080,7 +2132,8 @@ ax_rv_K      = plt.axes([start1,      starty+0.00, lenx,      0.02], facecolor=a
 ax_dur       = plt.axes([start1,      starty-0.03, lenx,      0.02], facecolor=axcolor)
 
 ax_t0        = plt.axes([start2,      starty+0.27, lenx,      0.02], facecolor=axcolor)
-ax_t0fine    = plt.axes([start2+Dfin, starty+0.25, lenx-Dfin, 0.02], facecolor=axcolor)
+ax_t0fine    = plt.axes([start2+tfin, starty+0.25, lenx-tfin, 0.02], facecolor=axcolor)
+ax_t0finest  = plt.axes([start2+tfin, starty+0.23, lenx-tfin, 0.02], facecolor=axcolor)
 ax_rp        = plt.axes([start2,      starty+0.20, lenx,      0.02], facecolor=axcolor)
 ax_Rplan     = plt.axes([start2,      starty+0.17, lenx,      0.02], facecolor=axcolor)
 ax_Mplan     = plt.axes([start2,      starty+0.15, lenx,      0.02], facecolor=axcolor)
@@ -2108,6 +2161,7 @@ title_zoom_rv  = r'zoom'
 title_alpha_rv = r'alpha'
 title_t0       = r't0'
 title_t0fine   = r'fine:'
+title_t0finest = r'finest:'
 title_per      = r'P [d]'
 title_perfine  = r'fine:'
 title_aR       = r'a / Rs'
@@ -2144,6 +2198,7 @@ if args.tex :
     title_alpha   = r'alpha'
     title_t0      = r'$t_0$'
     title_t0fine  = r'fine:'
+    title_t0finest= r'finest:'
     title_per     = r'$P\,[\mathrm{d}]$'
     title_perfine = r'fine:'
     title_aR      = r'$a\,/\,R_\mathrm{s}$'
@@ -2177,20 +2232,21 @@ if args.tex :
 # slider_xend    = Slider(ax_xend,      title_y0,      valmin=tmin,           valmax=tmax,           valfmt="%1.3f", valinit=xend,            color='b')
 # slider_ystart  = Slider(ax_ystart,    title_x1,      valmin=0.,             valmax=2.,             valfmt="%1.3f", valinit=ystart,          color='b')
 # slider_yend    = Slider(ax_yend,      title_y1,      valmin=0.,             valmax=2.,             valfmt="%1.3f", valinit=yend,            color='b')
-slider_x    = RangeSlider(ax_x,         title_x,       valmin=xstart,         valmax=xend,           valfmt="%1.1f", valinit=(xstart,xend),   color='lightblue')
-slider_y    = RangeSlider(ax_y,         title_y,       valmin=ystart,         valmax=yend,            valfmt="%1.3f", valinit=(ystart,yend),   color='lightblue')
+slider_x    = RangeSlider(ax_x,         title_x,       valmin=xmin,           valmax=xmax,           valfmt="%1.1f", valinit=(xstart,xend),   color='lightblue')
+slider_y    = RangeSlider(ax_y,         title_y,       valmin=ymin,           valmax=ymax,           valfmt="%1.3f", valinit=(ystart,yend),   color='lightblue')
 slider_zoom      = Slider(ax_zoom,      title_zoom,    valmin=0.01,           valmax=20.,            valfmt="%1.3f", valinit=zoom,            color='lightblue')
-slider_alpha     = Slider(ax_alpha,     title_alpha,   valmin=0.005,           valmax=1.,             valfmt="%1.3f", valinit=myalpha,         color='lightblue')
-slider_x_rv = RangeSlider(ax_x_rv,      title_x,       valmin=xstart_rv,      valmax=xend_rv,        valfmt="%1.1f", valinit=(xstart_rv,xend_rv), color='lightblue')
-slider_y_rv = RangeSlider(ax_y_rv,      title_y,       valmin=ystart_rv,      valmax=yend_rv,        valfmt="%1.0f", valinit=(ystart_rv,yend_rv), color='lightblue')
+slider_alpha     = Slider(ax_alpha,     title_alpha,   valmin=0.005,          valmax=1.,             valfmt="%1.3f", valinit=myalpha,         color='lightblue')
+slider_x_rv = RangeSlider(ax_x_rv,      title_x,       valmin=xmin,           valmax=xmax,           valfmt="%1.1f", valinit=(xstart_rv,xend_rv), color='lightblue')
+slider_y_rv = RangeSlider(ax_y_rv,      title_y,       valmin=ymin_rv,        valmax=ymax_rv,        valfmt="%1.0f", valinit=(ystart_rv,yend_rv), color='lightblue')
 slider_zoom_rv   = Slider(ax_zoom_rv,   title_zoom,    valmin=0.01,           valmax=20.,            valfmt="%1.3f", valinit=zoom_rv,         color='lightblue')
 slider_alpha_rv  = Slider(ax_alpha_rv,  title_alpha,   valmin=0.01,           valmax=1.,             valfmt="%1.3f", valinit=myalpha_rv,      color='lightblue')
-slider_t0        = Slider(ax_t0,        title_t0,      valmin=tmin,    valmax=tmax,    valfmt="%1.3f", valinit=params.t0,       color='g')
-slider_t0fine    = Slider(ax_t0fine,    title_t0fine,  valmin=t0start-0.1,    valmax=t0start+0.1,    valfmt="%1.3f", valinit=params.t0,       color='g')
+slider_t0        = Slider(ax_t0,        title_t0,      valmin=min([xstart,params.t0]), valmax=max([xend,params.t0]),  valfmt="%1.3f", valinit=params.t0, color='g')
+slider_t0fine    = Slider(ax_t0fine,    title_t0fine,  valmin=params.t0-1,  valmax=params.t0+1,  valfmt="%1.3f", valinit=params.t0,       color='g')
+slider_t0finest  = Slider(ax_t0finest,title_t0finest,valmin=params.t0-0.01, valmax=params.t0+0.01, valfmt="%1.4f", valinit=params.t0,       color='g')
 slider_per       = Slider(ax_per,       title_per,     valmin=0.1,            valmax=Pmax,           valfmt="%1.3f", valinit=params.per,      color='g')
 slider_perfine   = Slider(ax_perfine,   title_perfine, valmin=params.per-0.5, valmax=params.per+0.5, valfmt="%1.3f", valinit=params.per,      color='g')
 slider_aR        = Slider(ax_aR,        title_aR,      valmin=2.,             valmax=amax,           valfmt="%1.3f", valinit=params.a,        color='g')
-slider_aAU       = Slider(ax_aAU,       title_aAU, valmin=2.*params2.Rstar*Rsun/AU, valmax=amax*params2.Rstar*Rsun/AU, valfmt="%1.3f", valinit=params2.aAU,        color='b')
+slider_aAU       = Slider(ax_aAU,       title_aAU, valmin=2.*params2.Rstar*Rsun/AU, valmax=amax*params2.Rstar*Rsun/AU, valfmt="%1.3f", valinit=params2.aAU, color='b')
 slider_rhostar   = Slider(ax_rhostar,   title_rhostar, valmin=0.01,           valmax=10.,            valfmt="%1.3f", valinit=params2.rhostar, color='b')
 slider_Rstar     = Slider(ax_Rstar,     title_Rstar,   valmin=0.1,            valmax=5.,             valfmt="%1.3f", valinit=params2.Rstar,   color='b')
 slider_Mstar     = Slider(ax_Mstar,     title_Mstar,   valmin=0.08,           valmax=10.,            valfmt="%1.3f", valinit=params2.Mstar,   color='b')
@@ -2206,8 +2262,8 @@ slider_ecc       = Slider(ax_ecc,       title_ecc,     valmin=0.,             va
 slider_w         = Slider(ax_w,         title_w,       valmin=0.,             valmax=360.,           valfmt="%1.3f", valinit=params.w,        color='g')
 slider_F0        = Slider(ax_F0,        title_F0,      valmin=0.95,           valmax=1.05,           valfmt="%1.3f", valinit=params2.F0,      color='b')
 slider_bg        = Slider(ax_bg,        title_bg,      valmin=-0.01,          valmax=0.01,           valfmt="%1.3f", valinit=params2.bg,      color='b')
-slider_rv_K      = Slider(ax_rv_K,      title_K,       valmin=1.,             valmax=ymax_rv-ymin_rv,valfmt="%1.1f", valinit=params2.K,       color='g')
-slider_rv_offset = Slider(ax_rv_offset, title_offset,  valmin=ymin_rv,        valmax=ymax_rv,        valfmt="%1.1f", valinit=params2.offset,  color='g')
+slider_rv_K      = Slider(ax_rv_K,      title_K,       valmin=0.01,           valmax=Kmax,           valfmt="%1.2f", valinit=params2.K,       color='g')
+slider_rv_offset = Slider(ax_rv_offset, title_offset,  valmin=ystart_rv,      valmax=yend_rv,        valfmt="%1.1f", valinit=params2.offset,  color='g')
 slider_dur       = Slider(ax_dur,       title_dur,     valmin=0.,             valmax=24,             valfmt="%1.3f", valinit=params2.dur,     color='grey', dragging=False)
 slider_depth     = Slider(ax_depth,     title_depth,   valmin=0.,             valmax=100,            valfmt="%1.3f", valinit=params2.depth,   color='grey', dragging=False)
 
@@ -2225,6 +2281,7 @@ slider_zoom_rv.label.set_size(8)
 slider_alpha_rv.label.set_size(8)
 slider_t0.label.set_size(8)
 slider_t0fine.label.set_size(8)
+slider_t0finest.label.set_size(8)
 slider_per.label.set_size(8)
 slider_perfine.label.set_size(8)
 slider_aR.label.set_size(8)
@@ -2263,6 +2320,7 @@ slider_zoom_rv.on_changed(slider_update_zoom_rv)
 slider_alpha_rv.on_changed(slider_update_alpha_rv)
 slider_t0.on_changed(slider_update_t0)
 slider_t0fine.on_changed(slider_update_t0fine)
+slider_t0finest.on_changed(slider_update_t0finest)
 slider_per.on_changed(slider_update_per)
 slider_perfine.on_changed(slider_update_perfine)
 slider_aR.on_changed(slider_update_aR)
@@ -2321,7 +2379,8 @@ line_rv_2, = ax4.plot([0.,0.],               [-1000,1000], c='g' ,zorder=1, alph
 
 ############################### model curves
 
-t1 = np.linspace(tmin, tmax, prec)
+#t1 = np.linspace(tmin, tmax, prec)
+t1 = np.linspace(xstart, xend, prec)
 f1 = calc_lc(t1,params,params2)
 
 t2 = np.linspace(params.t0-params.per/2/zoom, params.t0+params.per/2/zoom, prec)

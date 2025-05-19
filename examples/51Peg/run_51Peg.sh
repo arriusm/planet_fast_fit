@@ -41,6 +41,8 @@
 # python  ../../planet_fast_fit.py  -save 51Peg_planet_fast_fit.pdf  -tit "51Peg:"   -P 4.230785  -e 0.013  -w 58  -i 90  -t0 9521.16303           -K 54.586  -off 11  -Mstar 1.09  -Rstar 1.152  -rhostar 0.   -Rplan 13.45   -zoom 3  -alpha 0.2  -rv 51Peg_RV_MaHPS.dat
 
 # manual:
+python  ../../planet_fast_fit.py -save 51Peg_nofit.pdf  -tit "51Peg:"  -rv 51Peg_RV_MaHPS.dat
+
 python  ../../planet_fast_fit.py  -save 51Peg_planet_fast_fit.pdf  -tit "51Peg:"   -P 4.230785  -rp 0.107  -e 0.01  -w 60  -i 80.  -t0 9521.16303           -K 55  -off 11  -Mstar 1.09  -Rstar 1.152      -zoom 3  -alpha 0.2  -rv 51Peg_RV_MaHPS.dat
 
 # python  ../../planet_fast_fit.py  -save 51Peg_planet_fast_fit.pdf  -tit "51Peg:"   -P 4.230785  -e 0.013  -w 58  -i 80  -t0 9521.16303  -rp 0          -K 54.586  -off 11  -Mstar 1.09  -Rstar 1.152  -rhostar 0.   -Rplan 13.45   -zoom 3  -alpha 0.2  -rv 51Peg_RV_MaHPS.dat

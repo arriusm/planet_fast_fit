@@ -32,5 +32,7 @@
 # cd TOI6130_LC
 # for i in *.fits; do python  ../../../planet_fast_fit.py  -save ${i}.pdf  -tit "TOI 6130:" -P 2.3926789  -t0 9849.63919  -rp 0.1111  -b 0.788  -e 0.036  -w 42  -rhostar 0.99   -K 145.   -u1 0.11915   -u2 0.33911   -Ms 1.16   -zoom 3  -alpha 0.1  -y0 0.98  -y1 1.01  ${i}; done
 
+python  ../../planet_fast_fit.py  -save TOI6130_nofit.pdf  -tit "TOI 6130:"    -zoom 3  -alpha 0.1  -rv TOI6130_RV_MaHPS.dat  TOI6130_TIC0210083929_SEC83.fits
+
 python  ../../planet_fast_fit.py  -save TOI6130_planet_fast_fit.pdf  -tit "TOI 6130:" -P 2.3926789  -t0 9849.63919  -rp 0.1111  -b 0.788  -e 0.036  -w 42  -rhostar 0.99   -K 145.  -off 18.  -u1 0.11915   -u2 0.33911   -Ms 1.16   -zoom 3  -alpha 0.1  -rv TOI6130_RV_MaHPS.dat  TOI6130_TIC0210083929_SEC83.fits
 
