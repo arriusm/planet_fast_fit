@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 2025-05-15 (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -1290,7 +1290,7 @@ onlyplot = False
 #prec = 501
 
 parser = argparse.ArgumentParser(description=version)
-parser.add_argument('files',    nargs='*',          help='files')
+parser.add_argument('files',    nargs='*',          help='lc_files')
 parser.add_argument('-lc',      dest='lc_filename', type=str,   default='',     help='[%(default)s] lc_filename')
 parser.add_argument('-rv',      dest='rv_filename', type=str,   default='',     help='[%(default)s] rv_filename')
 parser.add_argument('-save',    dest='save',        type=str,   default='',     help='[%(default)s] save with filename (pdf/png)')
@@ -1374,8 +1374,8 @@ if lc_files != [] :
     tdata = np.zeros(0)
     Fdata = np.zeros(0)
     edata = np.zeros(0)
+    print('  {:<60s}   {:<10s}   {:<10s}   {:<5s}'.format('lc_filename','norm','normmed','reldif*10000'))
     for lc_filename in lc_files : 
-        print("  ",lc_filename)
         #if lc_filename.endswith('.fits') and not lc_filename.endswith('tp.fits') and not lc_filename.endswith('dvt.fits') :
         if lc_filename.endswith('.fits') :
             tdata_in, Fdata_in, edata_in  = get_TESS_data(lc_filename)
@@ -1398,10 +1398,14 @@ if lc_files != [] :
         #print(edata[0:10])
     
         if (args.norm==0.) :
-            norm = np.median(Fdata_in)
-            #norm = np.percentile(Fdata,95.)
+            norm = np.percentile(Fdata_in,50)
+            norm = (np.percentile(Fdata_in,10)+np.percentile(Fdata_in,90))/2.
+            normmed = np.median(Fdata_in)
         else :
             norm = args.norm
+ 
+        print('  {:<60s}   {:<10.3f}   {:<10.3f}   {:<5.1f}'.format(lc_filename,norm,normmed,(normmed-norm)/norm*10000))
+
         Fdata_in /= norm
         edata_in /= norm
 

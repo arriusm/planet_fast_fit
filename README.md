@@ -7,13 +7,14 @@ usage: planet_fast_fit.py [-h] [-lc LC_FILENAME] [-rv RV_FILENAME]
                           [-rhoplan RHOPLAN] [-b B] [-i I] [-u1 U1] [-u2 U2]
                           [-e E] [-w W] [-norm NORM] [-x0 X0] [-x1 X1]
                           [-y0 Y0] [-y1 Y1] [-zoom ZOOM] [-alpha ALPHA]
-                          [-F0 F0] [-bg BG] [-K K] [-off OFFSET]
+                          [-alpharv ALPHARV] [-F0 F0] [-bg BG]
+                          [-K K] [-off OFFSET] [-prec PREC]
                           [files ...]
 
-Vers. 2025-02-06 (c) Arno Riffeser (arri@usm.lmu.de)
+Vers. 2025-05-19 (c) Arno Riffeser (arri@usm.lmu.de)
 
 positional arguments:
-  files             files
+  files             lc_files
 
 options:
   -h, --help        show this help message and exit
@@ -24,7 +25,7 @@ options:
   -tit TIT          [] Titel
   -Pmax PMAX        [0] Pmax
   -amax AMAX        [0] amax
-  -t0 T0            [999] t0
+  -t0 T0            [999] t0 [JD - 2450000]
   -P P              [2.] Periode P
   -Mstar MSTAR      [0] Masse Stern / Mstar
   -Mplan MPLAN      [0] Masse Planet / Mplan
@@ -33,7 +34,7 @@ options:
   -Rplan RPLAN      [0] Radius Planet Rplan
   -REB REB          [0] Radius EB 2nd star
   -a A              [0.] Grosse Halbachse a
-  -rhostar RHOSTAR  [1.0] mittl. Sterndichte rhostar
+  -rhostar RHOSTAR  [0.] mittl. Sterndichte rhostar
   -rhoplan RHOPLAN  [0.0] mittl. Planetendichte rhoplan
   -b B              [0.] Impaktparameter b
   -i I              [0.] Inklination i
@@ -48,8 +49,10 @@ options:
   -y1 Y1            [0] y1
   -zoom ZOOM        [1.0] zoom
   -alpha ALPHA      [0.05] alpha
+  -alpharv ALPHARV  [0.5] alpharv
   -F0 F0            [1.0] F0
   -bg BG            [0.0] bg
   -K K              [0.0] K
   -off OFFSET       [0.0] offset
+  -prec PREC        [501] precision
 ```
