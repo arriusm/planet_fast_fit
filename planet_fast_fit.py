@@ -2,7 +2,7 @@
 
 #%matplotlib
 
-version='Vers. 1.0 (2025-05-19) (c) Arno Riffeser (arri@usm.lmu.de)'
+version='Vers. 1.3.1 (2025-05-20) (c) Arno Riffeser (arri@usm.lmu.de)'
 
 
 import numpy as np
@@ -199,6 +199,11 @@ def calc_rhostar__aR_per(params) :
     myrhostar = params.a**3 * (3.*np.pi) / G / (params.per*(24.*3600.))**2 / 1000.
     #print('myrhostar=',myrhostar)
     return myrhostar
+
+def calc_per__rhostar_aR(params,params2) :
+    per = np.sqrt( params.a**3 * (3.*np.pi) / G / ((24.*3600.))**2 / 1000. / params2.rhostar )
+    return per
+
 
 def calc_aR__rhostar_per(params,params2) :
     #mya = (params2.rhostar / (3.*np.pi) * G * (params.per*(24.*3600.))**2 * rhosun)**(1./3.)
@@ -1621,7 +1626,7 @@ params2.F0 = args.F0
 
 if args.a > 0. :
     params.a = args.a
-    if args.rhostar == 0. and params.per!=0 :
+    if args.rhostar==0. and params.per!=0 :
         params2.rhostar = calc_rhostar__aR_per(params)
         if args.Mstar == 0. and args.Rstar != 0. :
             params2.Rstar   = args.Rstar
@@ -1637,6 +1642,33 @@ if args.a > 0. :
             print("args.a       = ",args.a)
             print("args.Mstar   = ",args.Mstar)
             print("args.Rstar   = ",args.Rstar)
+            exit(-1)
+    elif args.rhostar!=0. and args.P==0 :
+        params2.rhostar = args.rhostar
+        if args.Mstar == 0. and args.Rstar != 0. :
+            params2.Rstar   = args.Rstar
+            params2.Mstar   = calc_Mstar__rhostar_Rstar_Mplan(params2)
+        elif args.Mstar != 0. and args.Rstar == 0. :
+            params2.Mstar   = args.Mstar
+            params2.Rstar   = calc_Rstar__rhostar_Mstar_Mplan(params2)
+        elif  args.Mstar == 0. and args.Rstar == 0. :
+            params2.Rstar   = 1.
+            params2.Mstar   = calc_Mstar__rhostar_Rstar_Mplan(params2)
+        else :
+            print("too many given parameters:")
+            print("args..rhostar = ",args.rhostar)
+            print("args.Mstar    = ",args.Mstar)
+            print("args.Rstar    = ",args.Rstar)
+            exit(-1)
+        if args.Mstar == 0. or args.Rstar == 0. :
+            params.per = calc_per__rhostar_aR(params,params2)
+        else :
+            print("inconsistent given parameters:")
+            print("args.a       = ",args.a)
+            print("args.rhostar = ",args.rhostar)
+            print("args.Mstar   = ",args.Mstar)
+            print("args.Rstar   = ",args.Rstar)
+            print("args.P       = ",args.P)
             exit(-1)
     else :
         print("inconsistent given parameters:")
